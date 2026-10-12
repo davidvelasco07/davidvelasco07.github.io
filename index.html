@@ -4,483 +4,501 @@
 	html5up.net | @ajlkn
 	Free for personal and commercial use under the CCA 3.0 license (html5up.net/license)
 -->
-<html>
+<html lang="en">
 	<head>
-		<title>David A. Velasco-Romero</title>
+		<title>David A. Velasco-Romero · Computational Astrophysics</title>
 		<meta charset="utf-8" />
-		<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<meta name="description" content="David A. Velasco-Romero, computational astrophysicist at the Institute for Advanced Study and Princeton University. High-order methods, geometric multigrid and GPU computing for astrophysical fluid dynamics." />
+		<meta name="author" content="David A. Velasco-Romero" />
+		<meta property="og:title" content="David A. Velasco-Romero · Computational Astrophysics" />
+		<meta property="og:description" content="High-order methods, geometric multigrid and GPU computing for astrophysical fluid dynamics." />
+		<meta property="og:type" content="website" />
+		<meta property="og:url" content="https://davidvelasco07.github.io/" />
+		<meta property="og:image" content="https://davidvelasco07.github.io/images/fulls/kh.jpg" />
+		<link rel="icon" href="images/favicon.svg" type="image/svg+xml" />
 		<link rel="stylesheet" href="assets/css/main.css" />
+		<link rel="stylesheet" href="assets/css/custom.css" />
 	</head>
 	<body class="is-preload">
 
 		<!-- Header -->
 			<header id="header">
 				<div class="inner">
-					<a href="#" class="image avatar"><img src="images/avatar.jpg" alt="" /></a>
-					<h1><strong>David Velasco-Romero</strong><br />
-					PhD. in Scientific Computing<br />
-					Computational Astrophysics.<br />  
-					<a href="files/CV.pdf">CV</a><br />
-					<a href="https://scholar.google.com/citations?user=7G-sk-YAAAAJ&hl=en">Google Scholar</a>
-					</h1>
+					<a href="#one" class="image avatar"><img src="images/avatar.jpg" alt="Portrait of David A. Velasco-Romero" /></a>
+					<h1><strong>David A. Velasco-Romero</strong></h1>
+					<p class="tagline">Computational astrophysics<br />
+					Institute for Advanced Study<br />
+					Princeton University</p>
+					<nav class="side-nav" aria-label="Sections">
+						<a href="#one">About</a>
+						<a href="#research">Research</a>
+						<a href="#interactive">Interactive</a>
+						<a href="#three">Publications</a>
+						<a href="#movies">Movies</a>
+						<a href="#two">Gallery</a>
+						<a href="#software">Software</a>
+					</nav>
+					<p class="side-links">
+						<a href="files/CV.pdf">CV</a> ·
+						<a href="https://scholar.google.com/citations?user=7G-sk-YAAAAJ&amp;hl=en">Google Scholar</a> ·
+						<a href="https://orcid.org/0000-0002-6093-891X">ORCID</a>
+					</p>
 				</div>
 			</header>
 
 		<!-- Main -->
 			<div id="main">
 
-				<!-- One -->
+				<!-- About -->
 					<section id="one">
 						<header class="major">
 							<h2>Welcome</h2>
 						</header>
-						<p> I'm currently a Postdoctoral research associate at the Department of Astrophysical Sciences at Princeton University. 
-							My research interests include High Performance Computing, Parallel and GPU computing, Computational Fluid Dynamics and
-							Planet formation, with emphasis in planet-disc interaction.
-						</p>
-						<!--
-						<ul class="actions">
-							<li><a href="#" class="button">Learn More</a></li>
-						</ul>
-						-->
+						<p>I am a postdoctoral researcher in the School of Natural Sciences at the
+							<a href="https://www.ias.edu/sns">Institute for Advanced Study</a>, and a Visiting Research Collaborator
+							in the <a href="https://web.astro.princeton.edu/">Department of Astrophysical Sciences</a> at Princeton University.</p>
+						<p>My research is on numerical methods for astrophysical fluid dynamics. I am especially interested in high-order
+							methods, which reach a given accuracy with far fewer degrees of freedom than the second-order schemes most codes
+							rely on, and in making them robust enough for real astrophysical flows, with their shocks, steep gradients and
+							scales that cannot be fully resolved. I am equally interested in performance: how these methods are implemented
+							and optimized so that they run efficiently on modern supercomputers, GPUs in particular. On the application
+							side, my background is in planet formation and planet–disc interaction.</p>
+						<p class="small-note">Previously: postdoctoral researcher at Princeton University (2022–2025) and at the Institute for
+							Computational Science, University of Zurich (2019–2022). PhD in Computational Modelling and Scientific Computing,
+							UAEM, Cuernavaca, Mexico (2019).</p>
 					</section>
 
-				<!-- Two -->
-					<section id="three">
-						<h2>Recent Work</h2>
-						<div class="row">
-							<article class="col-6 col-12-xsmall work-item">
-								<a href="https://arxiv.org/pdf/2209.06597" class="image fit thumb"><img src="images/thumbs/kh.jpg" alt="" /></a>
-								<h3>Spectral Difference method with a posteriori limiting: Application to the Euler equations in one and two space dimensions</h3>
-								<a href="https://arxiv.org/pdf/2209.06597">Read</a> | <a href="https://arxiv.org/pdf/2209.06597">arXiv</a>
-                                <p>In this work, we have presented a novel implementation of an arbitrarily high-order SD method, with a second order FV solver as  fallback scheme. We have demonstrated that the resulting method has robust shock-capturing capabilities.</p>
+				<!-- Research -->
+					<section id="research">
+						<h2>Research</h2>
+						<div class="themes">
+							<article class="theme">
+								<h3>High-order methods and their robustness</h3>
+								<p>High-order methods reach a given accuracy with far fewer degrees of freedom than second-order schemes,
+									but at shocks and other discontinuities they produce spurious oscillations, which can drive the density
+									or the pressure negative. I work on the Spectral Difference method, a discontinuous finite-element scheme of
+									arbitrary order, combined with a posteriori limiting: every update is tested against numerical and
+									physical admissibility criteria, and in the cells that fail, the high-order fluxes are replaced by those
+									of a second-order MUSCL–Hancock scheme defined on the sub-cells of each element. The solution keeps its high
+									order where the flow is smooth and remains stable at discontinuities. With Romain Teyssier and Maria
+									Han Veiga, we have developed the method for the Euler equations, for low Mach number flows such as
+									stellar convection, and for the Navier–Stokes equations.</p>
+								<p><a href="sd/">The Spectral Difference method, interactively →</a><br />
+									<a href="fallback/">The fallback scheme, interactively →</a></p>
 							</article>
-							<article class="col-6 col-12-xsmall work-item">
-								<a href="https://arxiv.org/pdf/2111.11070.pdf" class="image fit thumb"><img src="images/thumbs/02.jpg" alt="" /></a>
-								<h3>Eccentricity driving of pebble accreting low-mass planets</h3>
-								<a href="https://academic.oup.com/mnras/article/509/4/5622/6440180">Read</a> | <a href="https://arxiv.org/pdf/2111.11070.pdf">arXiv</a>
-                                <p>We have adapted our nested-meshes version of the fargo3d code to perform simulations of a freely evolving, 
-                                    luminous planet in a thermally diffusive gaseous disc around a solar-mass star. The implementation allowed
-                                     us to improve the resolution of previous work <a href="https://arxiv.org/pdf/1704.01931.pdf">(Eklund & Masset 2017)</a>, and to get converged results for the
-                                      eccentricity reached at larger time, or asymptotic eccentricity, by a low-mass planet as a function of its luminosity.</p>
+							<article class="theme">
+								<h3>Multigrid solvers for self-gravity</h3>
+								<p>Self-gravity requires the solution of Poisson's equation for the gravitational potential at every time
+									step. Relaxation methods such as Jacobi or Gauss–Seidel solve it with simple local updates, but they
+									only damp the error efficiently at the scale of the mesh spacing: its smooth, long-wavelength part
+									decays slowly, and the number of iterations needed to converge grows with the resolution. Multigrid
+									applies the same relaxation on a hierarchy of coarser meshes, where those long wavelengths become short
+									and are damped quickly, so that a converged solution is reached in a few cycles, whatever the resolution.
+									I work on the multigrid self-gravity solver of AthenaK, on adaptively refined meshes and on GPUs: the
+									interpolation at the boundaries between refinement levels, which has to be conservative for orbits not
+									to drift, and the performance of the solver on large GPU clusters. It is now used in work on tidal
+									disruption events and on black holes inside massive stars.</p>
+								<p><a href="multigrid/">Relaxation and multigrid, interactively →</a></p>
 							</article>
-							<article class="col-6 col-12-xsmall work-item">
-								<a href="https://arxiv.org/pdf/2004.13422.pdf" class="image fit thumb"><img src="images/thumbs/03.jpg" alt="" /></a>
-								<h3>Dynamical friction with radiative feedback–II. High-resolution study of the subsonic regime</h3>
-								<a href="https://academic.oup.com/mnras/article/495/2/2063/5829867">Read</a> | <a href="https://arxiv.org/pdf/2004.13422.pdf">arXiv</a>
-                                <p>We have performed high-resolution simulations in the subsonic regime in two and three dimensions that resolve the Bondi radius of a perturber
-                                    travelling at constant speed in a gas with initially uniform density and temperature. We have found that for perturbers with sufficiently small
-                                    mass, the net force is in agreement with that obtained from linear theory <a href="https://arxiv.org/pdf/1611.05684.pdf">(Masset & Velasco-Romero 2017)</a>. At larger masses, the thermal forces are smaller than those given by
-                                     linear theory.</p>
-                            </article>
-							<article class="col-6 col-12-xsmall work-item">
-								<a href="https://arxiv.org/pdf/1812.03191.pdf" class="image fit thumb"><img src="images/thumbs/04.jpg" alt="" />
-                                </a>
-								<h3>Numerical study of dynamical friction with thermal effects–I. Comparison to linear theory</h3>
-								<a href="https://academic.oup.com/mnras/article/483/4/4383/5251832">Read</a> | <a href="https://arxiv.org/pdf/1812.03191.pdf">arXiv</a>
-                                <p>We have conducted extensive numerical simulations in order to check the impact of thermal effects on the dynamical friction on to a massive perturber,
-                                   both with and without intrinsic luminosity (i.e. with or without radiative feedback). Owing to the wide interval of length scales required to capture
-                                    accurately thermal effects, we had to resort to nested meshes, that we implemented in the GPU version of the FARGO3D code.</p>
-
+							<article class="theme">
+								<h3>GPU codes at scale</h3>
+								<p>I write and optimize simulation codes for GPUs: <a href="https://github.com/davidvelasco07/spd_K">spd_K</a>,
+									a Kokkos implementation of the Spectral Difference method, the nested-mesh version of FARGO3D,
+									and contributions to AthenaK and RAMSES. On these machines most of the performance is decided by how a
+									code uses the hardware rather than by the number of operations it performs: the memory access pattern
+									and the data locality of its kernels, the number of kernels launched per step, and the way ghost zones
+									are exchanged between mesh blocks and between ranks.</p>
 							</article>
-							<!--
-							<article class="col-6 col-12-xsmall work-item">
-								<a href="images/fulls/05.jpg" class="image fit thumb"><img src="images/thumbs/05.jpg" alt="" /></a>
-								<h3>Nunc enim commodo aliquet</h3>
-								<p>Lorem ipsum dolor sit amet nisl sed nullam feugiat.</p>
+							<article class="theme">
+								<h3>Planets in gas and dust discs</h3>
+								<p>A planet embedded in a disc heats the gas around it, and that heat changes the force the gas exerts back.
+									With Frédéric Masset I studied these thermal forces, the dynamical friction on luminous bodies, and how
+									accretion of pebbles can drive a low-mass planet onto an eccentric orbit, using nested meshes to resolve
+									scales far below the planet's Hill radius.</p>
 							</article>
-							<article class="col-6 col-12-xsmall work-item">
-								<a href="images/fulls/06.jpg" class="image fit thumb"><img src="images/thumbs/06.jpg" alt="" /></a>
-								<h3>Risus ornare lacinia</h3>
-								<p>Lorem ipsum dolor sit amet nisl sed nullam feugiat.</p>
-							</article>
-							-->
 						</div>
+					</section>
+
+				<!-- Interactive -->
+					<section id="interactive">
+						<h2>Interactive explainers</h2>
+						<p>Three short pages where the algorithm runs live in the browser and you control it.</p>
+						<div class="row">
+							<article class="col-4 col-12-small work-item">
+								<a href="sd/" class="image fit thumb explainer-card" aria-label="The Spectral Difference method explainer">
+									<svg viewBox="0 0 370 217" role="img" aria-hidden="true">
+										<rect width="370" height="217" fill="#f4f8f7"/>
+										<g stroke="#d5dedb" stroke-width="1"><line x1="30" y1="20" x2="30" y2="190"/><line x1="133" y1="20" x2="133" y2="190"/><line x1="237" y1="20" x2="237" y2="190"/><line x1="340" y1="20" x2="340" y2="190"/></g>
+										<path d="M30 140 C55 150 70 120 95 105 S120 90 133 96" fill="none" stroke="#2f9e7e" stroke-width="2.5"/>
+										<path d="M133 84 C160 60 185 48 205 58 S228 86 237 100" fill="none" stroke="#2f9e7e" stroke-width="2.5"/>
+										<path d="M237 118 C260 140 285 160 305 150 S330 128 340 122" fill="none" stroke="#2f9e7e" stroke-width="2.5"/>
+										<g fill="#fff" stroke="#2f9e7e" stroke-width="2"><circle cx="44" cy="143" r="4.5"/><circle cx="68" cy="130" r="4.5"/><circle cx="96" cy="105" r="4.5"/><circle cx="120" cy="95" r="4.5"/>
+										<circle cx="147" cy="72" r="4.5"/><circle cx="171" cy="56" r="4.5"/><circle cx="199" cy="55" r="4.5"/><circle cx="223" cy="78" r="4.5"/>
+										<circle cx="251" cy="131" r="4.5"/><circle cx="275" cy="150" r="4.5"/><circle cx="303" cy="151" r="4.5"/><circle cx="327" cy="131" r="4.5"/></g>
+										<g fill="#e08e0b"><rect x="26" y="186" width="8" height="8" transform="rotate(45 30 190)"/><rect x="129" y="186" width="8" height="8" transform="rotate(45 133 190)"/><rect x="233" y="186" width="8" height="8" transform="rotate(45 237 190)"/><rect x="336" y="186" width="8" height="8" transform="rotate(45 340 190)"/>
+										<rect x="49" y="187" width="6" height="6" transform="rotate(45 52 190)"/><rect x="78" y="187" width="6" height="6" transform="rotate(45 81 190)"/><rect x="108" y="187" width="6" height="6" transform="rotate(45 111 190)"/>
+										<rect x="152" y="187" width="6" height="6" transform="rotate(45 155 190)"/><rect x="182" y="187" width="6" height="6" transform="rotate(45 185 190)"/><rect x="212" y="187" width="6" height="6" transform="rotate(45 215 190)"/>
+										<rect x="256" y="187" width="6" height="6" transform="rotate(45 259 190)"/><rect x="285" y="187" width="6" height="6" transform="rotate(45 288 190)"/><rect x="315" y="187" width="6" height="6" transform="rotate(45 318 190)"/></g>
+									</svg>
+								</a>
+								<h3><a href="sd/">The Spectral Difference method</a></h3>
+								<p>Drag the solution inside an element, follow the four steps of an update, then advect a square wave at
+									orders 1 to 8 with and without a posteriori limiting.</p>
+							</article>
+							<article class="col-4 col-12-small work-item">
+								<a href="fallback/" class="image fit thumb explainer-card" aria-label="The fallback scheme explainer">
+									<svg viewBox="0 0 370 217" role="img" aria-hidden="true">
+										<rect width="370" height="217" fill="#f4f8f7"/>
+										<g stroke="#d5dedb" stroke-width="1"><line x1="30" y1="20" x2="30" y2="176"/><line x1="133" y1="20" x2="133" y2="176"/><line x1="237" y1="20" x2="237" y2="176"/><line x1="340" y1="20" x2="340" y2="176"/></g>
+										<g fill="#3b6ea5" fill-opacity="0.16"><rect x="144.6" y="128" width="39.9" height="22"/><rect x="184.5" y="70" width="39.9" height="58"/><rect x="224.4" y="70" width="12.6" height="58"/></g>
+										<path d="M30 150 H204 V70 H340" fill="none" stroke="#a9b1b3" stroke-width="1.4" stroke-dasharray="5 4"/>
+										<g stroke="#2f9e7e" stroke-width="4" fill="none"><path d="M30 150 H41.6 M41.6 150 H81.5 M81.5 150 H121.4 M121.4 150 H133 M133 150 H144.6"/><path d="M144.6 139 H184.5"/><path d="M224.4 76 H237"/><path d="M237 70 H248.6 M248.6 70 H288.5 M288.5 70 H328.4 M328.4 70 H340"/></g>
+										<path d="M184.5 48 H224.4" stroke="#d1495b" stroke-width="4"/>
+										<rect x="184.5" y="20" width="39.9" height="156" fill="#d1495b" fill-opacity="0.10"/>
+										<g>
+											<rect x="30" y="184" width="310" height="12" fill="#dfeae6"/>
+											<rect x="184.5" y="184" width="39.9" height="12" fill="#d1495b" fill-opacity="0.35"/>
+										</g>
+										<g fill="#e08e0b"><rect x="26.5" y="186.5" width="7" height="7" transform="rotate(45 30 190)"/><rect x="38.6" y="187" width="6" height="6" transform="rotate(45 41.6 190)"/><rect x="78.5" y="187" width="6" height="6" transform="rotate(45 81.5 190)"/><rect x="118.4" y="187" width="6" height="6" transform="rotate(45 121.4 190)"/>
+										<rect x="129.5" y="186.5" width="7" height="7" transform="rotate(45 133 190)"/><rect x="141.6" y="187" width="6" height="6" transform="rotate(45 144.6 190)"/>
+										<rect x="233.5" y="186.5" width="7" height="7" transform="rotate(45 237 190)"/><rect x="245.6" y="187" width="6" height="6" transform="rotate(45 248.6 190)"/><rect x="285.5" y="187" width="6" height="6" transform="rotate(45 288.5 190)"/><rect x="325.4" y="187" width="6" height="6" transform="rotate(45 328.4 190)"/>
+										<rect x="336.5" y="186.5" width="7" height="7" transform="rotate(45 340 190)"/></g>
+										<g fill="#d1495b"><rect x="180.5" y="186" width="8" height="8" transform="rotate(45 184.5 190)"/><rect x="220.4" y="186" width="8" height="8" transform="rotate(45 224.4 190)"/></g>
+									</svg>
+								</a>
+								<h3><a href="fallback/">The fallback scheme</a></h3>
+								<p>Follow one stage as every control volume is checked and, where it fails, recomputed at second order;
+									then watch the limiter stay silent until a shock forms.</p>
+							</article>
+							<article class="col-4 col-12-small work-item">
+								<a href="multigrid/" class="image fit thumb explainer-card" aria-label="Geometric multigrid explainer">
+									<svg viewBox="0 0 370 217" role="img" aria-hidden="true">
+										<rect width="370" height="217" fill="#f4f8f7"/>
+										<g stroke="#9db3ad" stroke-width="2" fill="none"><polyline points="50,45 100,85 150,125 185,165 220,125 270,85 320,45"/></g>
+										<g fill="#2f9e7e"><circle cx="50" cy="45" r="9"/><circle cx="100" cy="85" r="7.5"/><circle cx="150" cy="125" r="6"/><circle cx="220" cy="125" r="6"/><circle cx="270" cy="85" r="7.5"/><circle cx="320" cy="45" r="9"/></g>
+										<circle cx="185" cy="165" r="6" fill="#e08e0b"/>
+										<g font-family="Source Sans Pro, Helvetica, sans-serif" font-size="12" fill="#6b7c78"><text x="18" y="49">h</text><text x="14" y="89">2h</text><text x="14" y="129">4h</text><text x="14" y="169">8h</text>
+										<text x="62" y="70">restrict</text><text x="262" y="112">prolong</text><text x="160" y="192">solve</text></g>
+									</svg>
+								</a>
+								<h3><a href="multigrid/">Geometric multigrid</a></h3>
+								<p>Watch relaxation remove only the rough part of the error, step through a V-cycle level by level, then
+									drag point masses around and compare solvers on a 2D gravity problem.</p>
+							</article>
+						</div>
+					</section>
+
+				<!-- Publications -->
+					<section id="three">
+						<h2>Publications</h2>
+						<h3 class="sub">First-author papers</h3>
+						<ul class="pubs">
+							<li class="pub">
+								<a class="pub-thumb" href="https://arxiv.org/abs/2604.07339"><img loading="lazy" src="images/thumbs/sd3_kh.jpg" alt="Viscous Kelvin–Helmholtz instability at increasing resolution and order" /></a>
+								<div class="pub-body">
+									<h4>Spectral Difference method with a posteriori limiting: III – Navier–Stokes equations with arbitrary high-order accuracy</h4>
+									<p class="pub-meta">D. A. Velasco-Romero &amp; R. Teyssier · submitted to MNRAS (2026)</p>
+									<p>An arbitrarily high-order treatment of the Laplacian for the Spectral Difference method. The scheme resolves
+										viscous and diffusive scales at lower resolution than low-order methods and stays stable when those scales
+										are under-resolved.</p>
+									<p class="pub-links"><a href="https://arxiv.org/abs/2604.07339">arXiv:2604.07339</a></p>
+								</div>
+							</li>
+							<li class="pub">
+								<a class="pub-thumb" href="https://doi.org/10.1093/mnras/staf133"><img loading="lazy" src="images/thumbs/convection.jpg" alt="Turbulent convection simulated with a fourth-order Spectral Difference scheme" /></a>
+								<div class="pub-body">
+									<h4>Spectral Difference method with a posteriori limiting: II – Application to low Mach number flows</h4>
+									<p class="pub-meta">D. A. Velasco-Romero &amp; R. Teyssier · MNRAS 537, 2387 (2025)</p>
+									<p>Stellar convection is slow compared with sound, and most shock-capturing schemes drown it in numerical diffusion.
+										We combine a low-Mach correction of the HLLC Riemann solver with a well-balanced formulation to evolve small
+										perturbations on top of a steep hydrostatic equilibrium.</p>
+									<p class="pub-links"><a href="https://doi.org/10.1093/mnras/staf133">Journal</a> · <a href="https://arxiv.org/abs/2405.11063">arXiv:2405.11063</a></p>
+								</div>
+							</li>
+							<li class="pub">
+								<a class="pub-thumb" href="https://doi.org/10.1093/mnras/stae1835"><img loading="lazy" src="images/thumbs/dust_ring.jpg" alt="Dust density in a ring around the star, with a zoom on the planet crossing it" /></a>
+								<div class="pub-body">
+									<h4>Dust rings trap protoplanets on eccentric orbits and get consumed by them</h4>
+									<p class="pub-meta">D. A. Velasco-Romero, F. S. Masset, A. Morbidelli, P. Benítez-Llambay, L. Krapp &amp; E. Lega · MNRAS (2024)</p>
+									<p>Three-dimensional two-fluid simulations with nested meshes of protoplanets of 0.1 to 8 Earth masses near a
+										dusty ring. Two stable eccentric orbits keep the planet close to the ring, halt its migration and let it accrete
+										the dust; on the outer one, a strong thermal force at each passage through the ring produces bursts of accretion.</p>
+									<p class="pub-links"><a href="https://doi.org/10.1093/mnras/stae1835">Journal</a> · <a href="https://arxiv.org/abs/2407.16546">arXiv:2407.16546</a></p>
+								</div>
+							</li>
+							<li class="pub">
+								<a class="pub-thumb" href="https://doi.org/10.1093/mnras/stad226"><img loading="lazy" src="images/thumbs/kh.jpg" alt="Kelvin–Helmholtz instability with a fourth-order Spectral Difference scheme" /></a>
+								<div class="pub-body">
+									<h4>Spectral Difference method with a posteriori limiting: Application to the Euler equations in one and two space dimensions</h4>
+									<p class="pub-meta">D. A. Velasco-Romero, M. Han Veiga &amp; R. Teyssier · MNRAS (2023)</p>
+									<p>An arbitrarily high-order Spectral Difference method with a second-order finite-volume scheme as fallback.
+										Troubled cells are detected after each update and only their fluxes are replaced, which gives robust shock
+										capturing without giving up the accuracy of the smooth flow.</p>
+									<p class="pub-links"><a href="https://doi.org/10.1093/mnras/stad226">Journal</a> · <a href="https://arxiv.org/abs/2209.06597">arXiv:2209.06597</a> · <a href="sd/">Interactive explainer</a></p>
+								</div>
+							</li>
+							<li class="pub">
+								<a class="pub-thumb" href="https://doi.org/10.1093/mnras/stab3334"><img loading="lazy" src="images/thumbs/02.jpg" alt="Nested meshes around a planet in a protoplanetary disc" /></a>
+								<div class="pub-body">
+									<h4>Eccentricity driving of pebble accreting low-mass planets</h4>
+									<p class="pub-meta">D. A. Velasco-Romero, F. S. Masset &amp; R. Teyssier · MNRAS 509, 5622 (2022)</p>
+									<p>Simulations of a freely moving, luminous planet in a thermally diffusive disc with a nested-mesh version of
+										FARGO3D. The resolution reached gives converged values of the eccentricity a low-mass planet attains as a
+										function of its luminosity.</p>
+									<p class="pub-links"><a href="https://doi.org/10.1093/mnras/stab3334">Journal</a> · <a href="https://arxiv.org/abs/2111.11070">arXiv:2111.11070</a></p>
+								</div>
+							</li>
+							<li class="pub">
+								<a class="pub-thumb" href="https://doi.org/10.1093/mnras/staa1215"><img loading="lazy" src="images/thumbs/03.jpg" alt="Gas flow around a luminous perturber at three luminosities" /></a>
+								<div class="pub-body">
+									<h4>Dynamical friction with radiative feedback – II. High-resolution study of the subsonic regime</h4>
+									<p class="pub-meta">D. A. Velasco-Romero &amp; F. S. Masset · MNRAS 495, 2063 (2020)</p>
+									<p>Simulations that resolve the Bondi radius of a perturber moving through uniform gas. For small masses the net
+										force agrees with linear theory; at larger masses the thermal forces fall below it.</p>
+									<p class="pub-links"><a href="https://doi.org/10.1093/mnras/staa1215">Journal</a> · <a href="https://arxiv.org/abs/2004.13422">arXiv:2004.13422</a></p>
+								</div>
+							</li>
+							<li class="pub">
+								<a class="pub-thumb" href="https://doi.org/10.1093/mnras/sty3382"><img loading="lazy" src="images/thumbs/04.jpg" alt="Density perturbation around a moving hot body" /></a>
+								<div class="pub-body">
+									<h4>Numerical study of dynamical friction with thermal effects – I. Comparison to linear theory</h4>
+									<p class="pub-meta">D. A. Velasco-Romero &amp; F. S. Masset · MNRAS 483, 4383 (2019)</p>
+									<p>How heat changes the drag on a massive body moving through gas, with and without its own luminosity.
+										The range of scales involved required nested meshes, implemented in the GPU version of FARGO3D.</p>
+									<p class="pub-links"><a href="https://doi.org/10.1093/mnras/sty3382">Journal</a> · <a href="https://arxiv.org/abs/1812.03191">arXiv:1812.03191</a></p>
+								</div>
+							</li>
+							<li class="pub">
+								<a class="pub-thumb" href="https://doi.org/10.1093/mnras/sty1192"><img loading="lazy" src="images/thumbs/dg_disc.jpg" alt="Surface density of a disc with an embedded planet, computed with the Discontinuous Galerkin code" /></a>
+								<div class="pub-body">
+									<h4>Planet–disc interactions with Discontinuous Galerkin methods using GPUs</h4>
+									<p class="pub-meta">D. A. Velasco-Romero, M. Han Veiga, R. Teyssier &amp; F. S. Masset · MNRAS (2018)</p>
+									<p>A two-dimensional, high-order Discontinuous Galerkin code that runs on several GPUs, compared with FARGO3D on
+										a planet–disc problem through the numerical viscosity inferred from the torque on the planet. Fifth-order
+										schemes reach numerical viscosities of a few 10<sup>−8</sup> r<sup>2</sup>Ω.</p>
+									<p class="pub-links"><a href="https://doi.org/10.1093/mnras/sty1192">Journal</a> · <a href="https://arxiv.org/abs/1805.01443">arXiv:1805.01443</a></p>
+								</div>
+							</li>
+						</ul>
+
+						<h3 class="sub">With collaborators</h3>
+						<ul class="pubs-compact">
+							<li>H.-X. Jiang, M. Yang, <strong>D. A. Velasco-Romero</strong>, F. Yu, J.-Z. Xia, X. Li &amp; Y. Mizuno,
+								<em>An end-to-end numerical framework for tidal disruption events with AthenaK</em>, accepted in ApJS (2026).
+								<a href="https://arxiv.org/abs/2609.37859">arXiv:2609.37859</a></li>
+							<li>S. Ma, D. N. C. Lin &amp; <strong>D. A. Velasco-Romero</strong>,
+								<em>Formation of merging black hole binaries inside massive AGN stars</em> (2026).
+								<a href="https://arxiv.org/abs/2609.16290">arXiv:2609.16290</a></li>
+							<li>A. Derdzinski, A. J. Dittmann, A. Franchini, et al. (incl. <strong>D. A. Velasco-Romero</strong>),
+								<em>The LISA Astrophysics “Disc-IMRI” code comparison project: intermediate-mass-ratio binaries in AGN-like discs</em>,
+								submitted to the Open Journal of Astrophysics (2025).
+								<a href="https://arxiv.org/abs/2512.10893">arXiv:2512.10893</a></li>
+							<li>J. Palafoutas, <strong>D. A. Velasco-Romero</strong> &amp; R. Teyssier,
+								<em>Comparison between a priori and a posteriori slope limiters for high-order finite volume schemes</em>,
+								J. Comput. Phys. (2025).
+								<a href="https://doi.org/10.1016/j.jcp.2024.113571">Journal</a> · <a href="https://arxiv.org/abs/2404.18037">arXiv:2404.18037</a></li>
+							<li>M. Han Veiga, <strong>D. A. Velasco-Romero</strong>, Q. Wenger &amp; R. Teyssier,
+								<em>An arbitrary high-order Spectral Difference method for the induction equation</em>,
+								J. Comput. Phys. (2021).
+								<a href="https://doi.org/10.1016/j.jcp.2021.110327">Journal</a> · <a href="https://arxiv.org/abs/2005.13563">arXiv:2005.13563</a></li>
+							<li>M. Han Veiga, <strong>D. A. Velasco-Romero</strong>, R. Abgrall &amp; R. Teyssier,
+								<em>Capturing near-equilibrium solutions: a comparison between high-order Discontinuous Galerkin methods and well-balanced schemes</em>,
+								Commun. Comput. Phys. (2019).
+								<a href="https://doi.org/10.4208/cicp.OA-2018-0071">Journal</a> · <a href="https://arxiv.org/abs/1803.05919">arXiv:1803.05919</a></li>
+							<li>J. Fung, F. Masset, E. Lega &amp; <strong>D. Velasco</strong>,
+								<em>Planetary torque in 3D isentropic disks</em>, AJ 153, 124 (2017).
+								<a href="https://doi.org/10.3847/1538-3881/153/3/124">Journal</a> · <a href="https://arxiv.org/abs/1610.09375">arXiv:1610.09375</a></li>
+							<li>F. S. Masset &amp; <strong>D. A. Velasco-Romero</strong>,
+								<em>Dynamical friction on hot bodies in opaque, gaseous media</em>, MNRAS 465, 3175 (2017).
+								<a href="https://doi.org/10.1093/mnras/stw3008">Journal</a> · <a href="https://arxiv.org/abs/1611.05684">arXiv:1611.05684</a></li>
+						</ul>
 						<ul class="actions">
-							<li><a href="https://scholar.google.com/citations?user=7G-sk-YAAAAJ&hl=en" class="button">Full List</a></li>
+							<li><a href="https://scholar.google.com/citations?user=7G-sk-YAAAAJ&amp;hl=en" class="button">Google Scholar</a></li>
+							<li><a href="https://arxiv.org/search/?searchtype=author&amp;query=Velasco-Romero" class="button">arXiv</a></li>
 						</ul>
 					</section>
-					<!-- Gallery -->
-					<section id="two">
-						<h2>Gallery</h2>
-							<div class="row">
-								<article class="col-6 col-12-xsmall work-item">
-									<a href="images/fulls/kh.jpg" class="image fit thumb"><img src="images/thumbs/kh.jpg" alt="" /></a>
-                                    <h3>Kelvin–Helmholtz instability: SD 4th order, 512x512 elements
-                                    </h3>
-								</article>
-								<article class="col-6 col-12-xsmall work-item">
-									<a href="images/fulls/rt.jpg" class="image fit thumb"><img src="images/thumbs/rt.jpg" alt="" /></a>
-                                    <h3>Rayleigh–Taylor instability: Godunov 2nd-order, 512, 1024, 2048 and 4096 cells</h3>
-								</article>
-								<article class="col-6 col-12-xsmall work-item">
-									<a href="images/fulls/convection.jpg" class="image fit thumb"><img src="images/thumbs/convection.jpg" alt="" /></a>
-                                    <h3>Turbulent Convection: SD 4th order, 512x1024 DOF</h3>
-								</article>
-								<article class="col-6 col-12-xsmall work-item">
-									<a href="images/fulls/df.jpg" class="image fit thumb"><img src="images/thumbs/df.jpg" alt="" /></a>
-                                    <h3>Dynamical Friction: FARGO3D+NM </h3>
-								</article>
-								<!--
-								<article class="col-6 col-12-xsmall work-item">
-									<a href="images/fulls/05.jpg" class="image fit thumb"><img src="images/thumbs/05.jpg" alt="" /></a>
-								</article>
-								<article class="col-6 col-12-xsmall work-item">
-									<a href="images/fulls/06.jpg" class="image fit thumb"><img src="images/thumbs/06.jpg" alt="" /></a>
-								</article>
-								-->
-							</div> 
-						</section>
-					
-					<!-- Movies -->
+
+				<!-- Movies -->
 					<section id="movies">
 						<h2>Movies</h2>
-						<div class="row">
-						<article class="col-6 col-12-xsmall work-item">
-							<video  class="image fit thumb" controls="controls" src="videos/KH.mp4" >
-								Your browser does not support the HTML5 Video element.
-							</video>
-							<h3>Kelvin–Helmholtz instability: Density map obtained with our Spectral-Differences code for 512x512 elements of 4th order.</h3>
-						</article>
-						<article class="col-6 col-12-xsmall work-item">
-							<video class="image fit thumb" controls="controls" src="videos/RTs.mp4" >
-								Your browser does not support the HTML5 Video element.
-							</video>
-							<h3>Rayleigh–Taylor instability: Density map obtained with 512, 1024, 2048 and 4096 cells using a 2nd order Godunov method.</h3>
-                        </article>
-						<article class="col-6 col-12-xsmall work-item">
-							<video class="image fit thumb" controls="controls" src="videos/Ls.mp4" >
-								Your browser does not support the HTML5 Video element.
-							</video>
-							<h3>Tracer of fluid advected against a massive and luminous body, performed with FARGO3D+Nested-Meshes.</h3>
-						</article>
-						<!--
-						<article class="col-6 col-12-xsmall work-item">
-						<video controls="controls" src="videos/acc.mp4">
-							Your browser does not support the HTML5 Video element.
-						</video>
-						<h3>Dust density map: Planet accreting dust.</h3>
-						</article>-->
+
+						<h3 class="sub">Self-gravity with multigrid, in AthenaK</h3>
+						<figure class="movie movie-wide">
+							<video width="1920" height="960" muted loop playsinline preload="metadata" poster="images/posters/mg/binary_amr_compare.jpg" src="videos/mg/binary_amr_compare.mp4"></video>
+							<figcaption><strong>Refinement must not perturb the orbit.</strong> Gravitational potential of a binary, with mesh blocks
+								that refine around each mass and follow it. Left: mass-conserving prolongation at coarse–fine boundaries;
+								the masses stay on the analytic orbit (dashed). Right: plain interpolation; the orbit drifts.
+								<a href="multigrid/">How the solver works →</a></figcaption>
+						</figure>
+						<figure class="movie movie-wide">
+							<video width="1920" height="958" muted loop playsinline preload="metadata" poster="images/posters/mg/turbulent_fragmentation.jpg" src="videos/mg/turbulent_fragmentation.mp4"></video>
+							<figcaption><strong>Turbulent fragmentation under self-gravity.</strong> Column density of a turbulent,
+								self-gravitating cloud at 2048³ cells, seen along two axes. Filaments that exceed their local Jeans mass
+								collapse; the multigrid solver supplies the potential at every step.</figcaption>
+						</figure>
+
+						<h3 class="sub">Fluid instabilities</h3>
+						<div class="movie-grid">
+							<figure class="movie movie-square">
+								<video width="1080" height="1080" muted loop playsinline preload="metadata" poster="images/posters/kh_sd.jpg" src="videos/kh_sd.mp4"></video>
+								<figcaption><strong>Kelvin–Helmholtz instability.</strong> Density, fourth-order Spectral Difference with a posteriori
+									limiting, 800×800 elements (3200² degrees of freedom). The method of
+									<a href="https://arxiv.org/abs/2209.06597">Paper I</a>; see <a href="fallback/#real">where the limiter acts</a>.</figcaption>
+							</figure>
+							<figure class="movie movie-square">
+								<video width="640" height="628" muted loop playsinline preload="metadata" poster="images/posters/rt.jpg" src="videos/rayleigh_taylor.mp4"></video>
+								<figcaption><strong>Rayleigh–Taylor instability.</strong> Density with a second-order Godunov method at 512, 1024,
+									2048 and 4096 cells.</figcaption>
+							</figure>
+							<figure class="movie movie-square">
+								<video width="1080" height="1080" muted loop playsinline preload="metadata" poster="images/posters/kh_viscous.jpg" src="videos/kh_viscous.mp4"></video>
+								<figcaption><strong>Viscous Kelvin–Helmholtz instability.</strong> The dye in the test of Lecoanet et al. (2016)
+									at Reynolds number 10⁵, with both streams at the same density: explicit viscosity and diffusion give
+									the problem a well-defined solution to converge to. Fourth-order Spectral Difference with the
+									Navier–Stokes terms of <a href="https://arxiv.org/abs/2604.07339">Paper III</a>, 512×1024 degrees of
+									freedom; one of the two shear layers is shown.</figcaption>
+							</figure>
+							<figure class="movie movie-square">
+								<video width="1080" height="1080" muted loop playsinline preload="metadata" poster="images/posters/kh_viscous_strat.jpg" src="videos/kh_viscous_strat.mp4"></video>
+								<figcaption><strong>The same test with a density jump.</strong> One stream is now twice as dense as the
+									other, and nothing else changes. The billow rolls up as before and then breaks into small-scale
+									structure. This case is far harder to converge, and at this resolution the details of the break-up
+									are not.</figcaption>
+							</figure>
+						</div>
+
+						<figure class="movie movie-side">
+							<video width="1080" height="1080" muted loop playsinline preload="metadata" poster="images/posters/tgv.jpg" src="videos/tgv.mp4"></video>
+							<figcaption><strong>Taylor–Green vortex in three dimensions.</strong> A volume rendering of the vorticity
+								magnitude at Reynolds number 1600 and Mach 0.1: the initial vortex is stretched into sheets, the sheets
+								roll up into tubes, and the tubes break down into turbulence. Fourth-order Spectral Difference with the
+								Navier–Stokes terms of <a href="https://arxiv.org/abs/2604.07339">Paper III</a>, 128³ degrees of freedom;
+								the colour scale follows the growth of the vorticity.</figcaption>
+						</figure>
+						<figure class="movie movie-tall">
+							<video width="720" height="1440" muted loop playsinline preload="metadata" poster="images/posters/bubble.jpg" src="videos/bubble.mp4"></video>
+							<figcaption><strong>A hot bubble rising at low Mach number.</strong> A convective layer between two stably
+								stratified ones, with gravity pointing down. The colour is the temperature relative to the hydrostatic
+								equilibrium, within ±0.4 per cent: the bubble starts as a perturbation of one per cent, rises at a few
+								per cent of the sound speed, rolls up into a vortex pair and breaks apart, while gravity waves spread
+								through the stable layers. Well-balanced fourth-order Spectral Difference scheme, 768×384 degrees of
+								freedom, from the tests of <a href="https://arxiv.org/abs/2405.11063">Paper II</a>.</figcaption>
+						</figure>
+
+						<h3 class="sub">Shocks at high order</h3>
+						<figure class="movie movie-wide">
+							<video width="1920" height="960" muted loop playsinline preload="metadata" poster="images/posters/sd_dmr_troubles.jpg" src="videos/sd_dmr_troubles.mp4"></video>
+							<figcaption><strong>Double Mach reflection, and where the limiter acts.</strong> A Mach 10 shock runs along a wall.
+								Top: density with the fourth-order Spectral Difference scheme, 800×200 elements. Bottom: the control volumes
+								that fell back to second order (red, drawn enlarged). They trace the shocks and stay under half a per cent of
+								the cells; everywhere else the scheme remains fourth order. From the tests of
+								<a href="https://arxiv.org/abs/2209.06597">Paper I</a>.</figcaption>
+						</figure>
+						<figure class="movie">
+							<video width="1920" height="454" muted loop playsinline preload="metadata" poster="images/posters/sd_dmr_orders.jpg" src="videos/sd_dmr_orders.mp4"></video>
+							<figcaption><strong>The same problem at orders 2, 4 and 8.</strong> A close-up of the Mach stem and the wall jet,
+								with the same number of degrees of freedom in the three runs (3200×800). The shear layer stays smooth at
+								second order and rolls up at fourth and eighth.</figcaption>
+						</figure>
+						<figure class="movie">
+							<video width="1920" height="640" muted loop playsinline preload="metadata" poster="images/posters/sd_wt.jpg" src="videos/sd_wt.mp4"></video>
+							<figcaption><strong>Mach 3 wind tunnel with a step.</strong> Density with the same scheme, 600×200 elements: the bow shock,
+								its reflections off the walls, and the shear layer that rolls up along the top.</figcaption>
+						</figure>
+
+						<h3 class="sub">Planets, discs and dynamical friction</h3>
+						<figure class="movie movie-wide">
+							<video width="1920" height="960" muted loop playsinline preload="metadata" poster="images/posters/dust_ring.jpg" src="videos/dust_ring.mp4"></video>
+							<figcaption><strong>A planet crossing a dust ring.</strong> Dust surface density around a planet of four Earth masses
+								on an eccentric orbit, in the frame that follows the planet. At each periastron it dives into the ring,
+								accretes, and pulls out a trail of dust. FARGO3D with three nested mesh levels, from
+								<a href="https://arxiv.org/abs/2407.16546">Velasco-Romero et al. (2024)</a>.</figcaption>
+						</figure>
+						<figure class="movie movie-wide">
+							<video width="1920" height="960" muted loop playsinline preload="metadata" poster="images/posters/dust_ring_3d.jpg" src="videos/dust_ring_3d.mp4"></video>
+							<figcaption><strong>The same run in three dimensions.</strong> A volume rendering of the dust density, with the vertical
+								direction stretched five times: the dust layer is only about a hundredth of the orbital radius thick. Each
+								passage of the planet lifts a thin shell of dust several scale heights out of the midplane, and the
+								shell then drifts along the ring.</figcaption>
+						</figure>
+						<figure class="movie movie-wide">
+							<video width="1920" height="960" muted loop playsinline preload="metadata" poster="images/posters/dust_ring_8.jpg" src="videos/dust_ring_8.mp4"></video>
+							<figcaption><strong>The same ring, a planet twice as massive.</strong> With eight Earth masses the planet disturbs the
+								ring much more: it leaves dust-poor lanes behind it, and the mark of each passage is still visible when it
+								returns.</figcaption>
+						</figure>
+						<div class="movie-grid">
+							<figure class="movie movie-landscape">
+								<video width="600" height="392" muted loop playsinline preload="metadata" poster="images/posters/tracer.jpg" src="videos/tracer.mp4"></video>
+								<figcaption><strong>Gas flowing past a massive, luminous body.</strong> A passive tracer at three luminosities, increasing
+									from left to right. FARGO3D with nested meshes, from the work on
+									<a href="https://arxiv.org/abs/2004.13422">dynamical friction with radiative feedback</a>.</figcaption>
+							</figure>
 						</div>
 					</section>
 
-				<!-- Four -->
-				<!--
-					<section id="four">
-						<h2>Elements</h2>
-
-						<section>
-							<h4>Text</h4>
-							<p>This is <b>bold</b> and this is <strong>strong</strong>. This is <i>italic</i> and this is <em>emphasized</em>.
-							This is <sup>superscript</sup> text and this is <sub>subscript</sub> text.
-							This is <u>underlined</u> and this is code: <code>for (;;) { ... }</code>. Finally, <a href="#">this is a link</a>.</p>
-							<hr />
-							<header>
-								<h4>Heading with a Subtitle</h4>
-								<p>Lorem ipsum dolor sit amet nullam id egestas urna aliquam</p>
-							</header>
-							<p>Nunc lacinia ante nunc ac lobortis. Interdum adipiscing gravida odio porttitor sem non mi integer non faucibus ornare mi ut ante amet placerat aliquet. Volutpat eu sed ante lacinia sapien lorem accumsan varius montes viverra nibh in adipiscing blandit tempus accumsan.</p>
-							<header>
-								<h5>Heading with a Subtitle</h5>
-								<p>Lorem ipsum dolor sit amet nullam id egestas urna aliquam</p>
-							</header>
-							<p>Nunc lacinia ante nunc ac lobortis. Interdum adipiscing gravida odio porttitor sem non mi integer non faucibus ornare mi ut ante amet placerat aliquet. Volutpat eu sed ante lacinia sapien lorem accumsan varius montes viverra nibh in adipiscing blandit tempus accumsan.</p>
-							<hr />
-							<h2>Heading Level 2</h2>
-							<h3>Heading Level 3</h3>
-							<h4>Heading Level 4</h4>
-							<h5>Heading Level 5</h5>
-							<h6>Heading Level 6</h6>
-							<hr />
-							<h5>Blockquote</h5>
-							<blockquote>Fringilla nisl. Donec accumsan interdum nisi, quis tincidunt felis sagittis eget tempus euismod. Vestibulum ante ipsum primis in faucibus vestibulum. Blandit adipiscing eu felis iaculis volutpat ac adipiscing accumsan faucibus. Vestibulum ante ipsum primis in faucibus lorem ipsum dolor sit amet nullam adipiscing eu felis.</blockquote>
-							<h5>Preformatted</h5>
-							<pre><code>i = 0;
-
-while (!deck.isInOrder()) {
-print 'Iteration ' + i;
-deck.shuffle();
-i++;
-}
-
-print 'It took ' + i + ' iterations to sort the deck.';</code></pre>
-						</section>
-
-						<section>
-							<h4>Lists</h4>
-							<div class="row">
-								<div class="col-6 col-12-xsmall">
-									<h5>Unordered</h5>
-									<ul>
-										<li>Dolor pulvinar etiam magna etiam.</li>
-										<li>Sagittis adipiscing lorem eleifend.</li>
-										<li>Felis enim feugiat dolore viverra.</li>
-									</ul>
-									<h5>Alternate</h5>
-									<ul class="alt">
-										<li>Dolor pulvinar etiam magna etiam.</li>
-										<li>Sagittis adipiscing lorem eleifend.</li>
-										<li>Felis enim feugiat dolore viverra.</li>
-									</ul>
-								</div>
-								<div class="col-6 col-12-xsmall">
-									<h5>Ordered</h5>
-									<ol>
-										<li>Dolor pulvinar etiam magna etiam.</li>
-										<li>Etiam vel felis at lorem sed viverra.</li>
-										<li>Felis enim feugiat dolore viverra.</li>
-										<li>Dolor pulvinar etiam magna etiam.</li>
-										<li>Etiam vel felis at lorem sed viverra.</li>
-										<li>Felis enim feugiat dolore viverra.</li>
-									</ol>
-									<h5>Icons</h5>
-									<ul class="icons">
-										<li><a href="#" class="icon brands fa-twitter"><span class="label">Twitter</span></a></li>
-										<li><a href="#" class="icon brands fa-facebook-f"><span class="label">Facebook</span></a></li>
-										<li><a href="#" class="icon brands fa-instagram"><span class="label">Instagram</span></a></li>
-										<li><a href="#" class="icon brands fa-github"><span class="label">Github</span></a></li>
-										<li><a href="#" class="icon brands fa-dribbble"><span class="label">Dribbble</span></a></li>
-										<li><a href="#" class="icon brands fa-tumblr"><span class="label">Tumblr</span></a></li>
-									</ul>
-								</div>
-							</div>
-							<h5>Actions</h5>
-							<ul class="actions">
-								<li><a href="#" class="button primary">Default</a></li>
-								<li><a href="#" class="button">Default</a></li>
-							</ul>
-							<ul class="actions small">
-								<li><a href="#" class="button primary small">Small</a></li>
-								<li><a href="#" class="button small">Small</a></li>
-							</ul>
-							<div class="row">
-								<div class="col-6 col-12-small">
-									<ul class="actions stacked">
-										<li><a href="#" class="button primary">Default</a></li>
-										<li><a href="#" class="button">Default</a></li>
-									</ul>
-								</div>
-								<div class="col-6 col-12-small">
-									<ul class="actions stacked">
-										<li><a href="#" class="button primary small">Small</a></li>
-										<li><a href="#" class="button small">Small</a></li>
-									</ul>
-								</div>
-								<div class="col-6 col-12-small">
-									<ul class="actions stacked">
-										<li><a href="#" class="button primary fit">Default</a></li>
-										<li><a href="#" class="button fit">Default</a></li>
-									</ul>
-								</div>
-								<div class="col-6 col-12-small">
-									<ul class="actions stacked">
-										<li><a href="#" class="button primary small fit">Small</a></li>
-										<li><a href="#" class="button small fit">Small</a></li>
-									</ul>
-								</div>
-							</div>
-						</section>
-
-						<section>
-							<h4>Table</h4>
-							<h5>Default</h5>
-							<div class="table-wrapper">
-								<table>
-									<thead>
-										<tr>
-											<th>Name</th>
-											<th>Description</th>
-											<th>Price</th>
-										</tr>
-									</thead>
-									<tbody>
-										<tr>
-											<td>Item One</td>
-											<td>Ante turpis integer aliquet porttitor.</td>
-											<td>29.99</td>
-										</tr>
-										<tr>
-											<td>Item Two</td>
-											<td>Vis ac commodo adipiscing arcu aliquet.</td>
-											<td>19.99</td>
-										</tr>
-										<tr>
-											<td>Item Three</td>
-											<td> Morbi faucibus arcu accumsan lorem.</td>
-											<td>29.99</td>
-										</tr>
-										<tr>
-											<td>Item Four</td>
-											<td>Vitae integer tempus condimentum.</td>
-											<td>19.99</td>
-										</tr>
-										<tr>
-											<td>Item Five</td>
-											<td>Ante turpis integer aliquet porttitor.</td>
-											<td>29.99</td>
-										</tr>
-									</tbody>
-									<tfoot>
-										<tr>
-											<td colspan="2"></td>
-											<td>100.00</td>
-										</tr>
-									</tfoot>
-								</table>
-							</div>
-
-							<h5>Alternate</h5>
-							<div class="table-wrapper">
-								<table class="alt">
-									<thead>
-										<tr>
-											<th>Name</th>
-											<th>Description</th>
-											<th>Price</th>
-										</tr>
-									</thead>
-									<tbody>
-										<tr>
-											<td>Item One</td>
-											<td>Ante turpis integer aliquet porttitor.</td>
-											<td>29.99</td>
-										</tr>
-										<tr>
-											<td>Item Two</td>
-											<td>Vis ac commodo adipiscing arcu aliquet.</td>
-											<td>19.99</td>
-										</tr>
-										<tr>
-											<td>Item Three</td>
-											<td> Morbi faucibus arcu accumsan lorem.</td>
-											<td>29.99</td>
-										</tr>
-										<tr>
-											<td>Item Four</td>
-											<td>Vitae integer tempus condimentum.</td>
-											<td>19.99</td>
-										</tr>
-										<tr>
-											<td>Item Five</td>
-											<td>Ante turpis integer aliquet porttitor.</td>
-											<td>29.99</td>
-										</tr>
-									</tbody>
-									<tfoot>
-										<tr>
-											<td colspan="2"></td>
-											<td>100.00</td>
-										</tr>
-									</tfoot>
-								</table>
-							</div>
-						</section>
-
-						<section>
-							<h4>Buttons</h4>
-							<ul class="actions">
-								<li><a href="#" class="button primary">Primary</a></li>
-								<li><a href="#" class="button">Default</a></li>
-							</ul>
-							<ul class="actions">
-								<li><a href="#" class="button large">Large</a></li>
-								<li><a href="#" class="button">Default</a></li>
-								<li><a href="#" class="button small">Small</a></li>
-							</ul>
-							<ul class="actions fit">
-								<li><a href="#" class="button primary fit">Fit</a></li>
-								<li><a href="#" class="button fit">Fit</a></li>
-							</ul>
-							<ul class="actions fit small">
-								<li><a href="#" class="button primary fit small">Fit + Small</a></li>
-								<li><a href="#" class="button fit small">Fit + Small</a></li>
-							</ul>
-							<ul class="actions">
-								<li><a href="#" class="button primary icon solid fa-download">Icon</a></li>
-								<li><a href="#" class="button icon solid fa-download">Icon</a></li>
-							</ul>
-							<ul class="actions">
-								<li><span class="button primary disabled">Primary</span></li>
-								<li><span class="button disabled">Default</span></li>
-							</ul>
-						</section>
-
-						<section>
-							<h4>Form</h4>
-							<form method="post" action="#">
-								<div class="row gtr-uniform gtr-50">
-									<div class="col-6 col-12-xsmall">
-										<input type="text" name="demo-name" id="demo-name" value="" placeholder="Name" />
-									</div>
-									<div class="col-6 col-12-xsmall">
-										<input type="email" name="demo-email" id="demo-email" value="" placeholder="Email" />
-									</div>
-									<div class="col-12">
-										<select name="demo-category" id="demo-category">
-											<option value="">- Category -</option>
-											<option value="1">Manufacturing</option>
-											<option value="1">Shipping</option>
-											<option value="1">Administration</option>
-											<option value="1">Human Resources</option>
-										</select>
-									</div>
-									<div class="col-4 col-12-small">
-										<input type="radio" id="demo-priority-low" name="demo-priority" checked>
-										<label for="demo-priority-low">Low Priority</label>
-									</div>
-									<div class="col-4 col-12-small">
-										<input type="radio" id="demo-priority-normal" name="demo-priority">
-										<label for="demo-priority-normal">Normal Priority</label>
-									</div>
-									<div class="col-4 col-12-small">
-										<input type="radio" id="demo-priority-high" name="demo-priority">
-										<label for="demo-priority-high">High Priority</label>
-									</div>
-									<div class="col-6 col-12-small">
-										<input type="checkbox" id="demo-copy" name="demo-copy">
-										<label for="demo-copy">Email me a copy of this message</label>
-									</div>
-									<div class="col-6 col-12-small">
-										<input type="checkbox" id="demo-human" name="demo-human" checked>
-										<label for="demo-human">I am a human and not a robot</label>
-									</div>
-									<div class="col-12">
-										<textarea name="demo-message" id="demo-message" placeholder="Enter your message" rows="6"></textarea>
-									</div>
-									<div class="col-12">
-										<ul class="actions">
-											<li><input type="submit" value="Send Message" class="primary" /></li>
-											<li><input type="reset" value="Reset" /></li>
-										</ul>
-									</div>
-								</div>
-							</form>
-						</section>
-
-						<section>
-							<h4>Image</h4>
-							<h5>Fit</h5>
-							<div class="box alt">
-								<div class="row gtr-50 gtr-uniform">
-									<div class="col-12"><span class="image fit"><img src="images/fulls/05.jpg" alt="" /></span></div>
-									<div class="col-4"><span class="image fit"><img src="images/thumbs/01.jpg" alt="" /></span></div>
-									<div class="col-4"><span class="image fit"><img src="images/thumbs/02.jpg" alt="" /></span></div>
-									<div class="col-4"><span class="image fit"><img src="images/thumbs/03.jpg" alt="" /></span></div>
-									<div class="col-4"><span class="image fit"><img src="images/thumbs/04.jpg" alt="" /></span></div>
-									<div class="col-4"><span class="image fit"><img src="images/thumbs/05.jpg" alt="" /></span></div>
-									<div class="col-4"><span class="image fit"><img src="images/thumbs/06.jpg" alt="" /></span></div>
-									<div class="col-4"><span class="image fit"><img src="images/thumbs/03.jpg" alt="" /></span></div>
-									<div class="col-4"><span class="image fit"><img src="images/thumbs/02.jpg" alt="" /></span></div>
-									<div class="col-4"><span class="image fit"><img src="images/thumbs/01.jpg" alt="" /></span></div>
-								</div>
-							</div>
-							<h5>Left &amp; Right</h5>
-							<p><span class="image left"><img src="images/avatar.jpg" alt="" /></span>Fringilla nisl. Donec accumsan interdum nisi, quis tincidunt felis sagittis eget. tempus euismod. Vestibulum ante ipsum primis in faucibus vestibulum. Blandit adipiscing eu felis iaculis volutpat ac adipiscing accumsan eu faucibus. Integer ac pellentesque praesent tincidunt felis sagittis eget. tempus euismod. Vestibulum ante ipsum primis in faucibus vestibulum. Blandit adipiscing eu felis iaculis volutpat ac adipiscing accumsan eu faucibus. Integer ac pellentesque praesent. Donec accumsan interdum nisi, quis tincidunt felis sagittis eget. tempus euismod. Vestibulum ante ipsum primis in faucibus vestibulum. Blandit adipiscing eu felis iaculis volutpat ac adipiscing accumsan eu faucibus. Integer ac pellentesque praesent tincidunt felis sagittis eget. tempus euismod. Vestibulum ante ipsum primis in faucibus vestibulum. Blandit adipiscing eu felis iaculis volutpat ac adipiscing accumsan eu faucibus. Integer ac pellentesque praesent.</p>
-							<p><span class="image right"><img src="images/avatar.jpg" alt="" /></span>Fringilla nisl. Donec accumsan interdum nisi, quis tincidunt felis sagittis eget. tempus euismod. Vestibulum ante ipsum primis in faucibus vestibulum. Blandit adipiscing eu felis iaculis volutpat ac adipiscing accumsan eu faucibus. Integer ac pellentesque praesent tincidunt felis sagittis eget. tempus euismod. Vestibulum ante ipsum primis in faucibus vestibulum. Blandit adipiscing eu felis iaculis volutpat ac adipiscing accumsan eu faucibus. Integer ac pellentesque praesent. Donec accumsan interdum nisi, quis tincidunt felis sagittis eget. tempus euismod. Vestibulum ante ipsum primis in faucibus vestibulum. Blandit adipiscing eu felis iaculis volutpat ac adipiscing accumsan eu faucibus. Integer ac pellentesque praesent tincidunt felis sagittis eget. tempus euismod. Vestibulum ante ipsum primis in faucibus vestibulum. Blandit adipiscing eu felis iaculis volutpat ac adipiscing accumsan eu faucibus. Integer ac pellentesque praesent.</p>
-						</section>
-
+				<!-- Gallery -->
+					<section id="two">
+						<h2>Gallery</h2>
+						<div class="row">
+							<article class="col-6 col-12-xsmall work-item">
+								<a href="images/fulls/kh_hr.jpg" class="image fit thumb"><img loading="lazy" src="images/thumbs/kh_hr.jpg" alt="Kelvin–Helmholtz instability" /></a>
+								<h3>Kelvin–Helmholtz instability: Spectral Difference, 4th order, 3200×3200 degrees of freedom</h3>
+							</article>
+							<article class="col-6 col-12-xsmall work-item">
+								<a href="images/fulls/01.jpg" class="image fit thumb"><img loading="lazy" src="images/thumbs/01.jpg" alt="Zoom into a Kelvin–Helmholtz billow down to the sub-element control volumes" /></a>
+								<h3>Zooming into a billow, down to the control volumes inside each element</h3>
+							</article>
+							<article class="col-6 col-12-xsmall work-item">
+								<a href="images/fulls/convection.jpg" class="image fit thumb"><img loading="lazy" src="images/thumbs/convection.jpg" alt="Turbulent convection" /></a>
+								<h3>Turbulent convection at low Mach number: Spectral Difference, 4th order, 512×1024 degrees of freedom</h3>
+							</article>
+							<article class="col-6 col-12-xsmall work-item">
+								<a href="images/fulls/dmr.jpg" class="image fit thumb"><img loading="lazy" src="images/thumbs/dmr.jpg" alt="Double Mach reflection: the Mach stem and the wall jet" /></a>
+								<h3>Double Mach reflection of a Mach 10 shock: Spectral Difference, 4th order, 6400×1600 degrees of freedom</h3>
+							</article>
+							<article class="col-6 col-12-xsmall work-item">
+								<a href="images/fulls/tgv.jpg" class="image fit thumb"><img loading="lazy" src="images/thumbs/tgv.jpg" alt="Isosurfaces of velocity and helicity in a 3D Taylor–Green vortex" /></a>
+								<h3>Taylor–Green vortex in 3D: velocity components and helicity</h3>
+							</article>
+							<article class="col-6 col-12-xsmall work-item">
+								<a href="images/fulls/rt.jpg" class="image fit thumb"><img loading="lazy" src="images/thumbs/rt.jpg" alt="Rayleigh–Taylor instability at four resolutions" /></a>
+								<h3>Rayleigh–Taylor instability: Godunov 2nd order at 512, 1024, 2048 and 4096 cells</h3>
+							</article>
+							<article class="col-6 col-12-xsmall work-item">
+								<a href="images/fulls/dust_ring_mesh.jpg" class="image fit thumb"><img loading="lazy" src="images/thumbs/dust_ring_mesh.jpg" alt="A planet of eight Earth masses crossing a dust ring, with the nested meshes drawn" /></a>
+								<h3>A planet of eight Earth masses crossing a dust ring: FARGO3D with three nested mesh levels (lines every eight cells)</h3>
+							</article>
+							<article class="col-6 col-12-xsmall work-item">
+								<a href="images/fulls/df.jpg" class="image fit thumb"><img loading="lazy" src="images/thumbs/df.jpg" alt="Flow around a luminous perturber" /></a>
+								<h3>Dynamical friction on a luminous body: FARGO3D with nested meshes</h3>
+							</article>
+							<article class="col-6 col-12-xsmall work-item">
+								<a href="images/fulls/02.jpg" class="image fit thumb"><img loading="lazy" src="images/thumbs/02.jpg" alt="Nested meshes around a planet" /></a>
+								<h3>Nested meshes around a pebble-accreting planet</h3>
+							</article>
+						</div>
 					</section>
-				-->
+
+				<!-- Software -->
+					<section id="software">
+						<h2>Software</h2>
+						<ul class="software">
+							<li><a href="https://github.com/davidvelasco07/spd"><strong>spd</strong></a>
+								<span>Spectral Difference method with a posteriori limiting in Python (NumPy/CuPy, MPI). The reference code of the paper series. Main developer.</span></li>
+							<li><a href="https://github.com/davidvelasco07/spd_K"><strong>spd_K</strong></a>
+								<span>The same method in C++ with Kokkos, for CPUs and GPUs. Main developer.</span></li>
+							<li><a href="https://github.com/IAS-Astrophysics/athenak"><strong>AthenaK</strong></a>
+								<span>Performance-portable AMR code for astrophysical (GR)MHD. Contributor: multigrid self-gravity, communication and performance on GPU systems.</span></li>
+							<li><a href="https://github.com/davidvelasco07/fargo3d_nm"><strong>FARGO3D + nested meshes</strong></a>
+								<span>Nested meshes for <a href="https://github.com/FARGO3D/fargo3d">FARGO3D</a> on GPUs. Main developer.</span></li>
+							<li><a href="https://github.com/ramses-organisation/ramses"><strong>RAMSES</strong></a>
+								<span>Contributor.</span></li>
+							<li><a href="https://github.com/davidvelasco07/flatiron2023"><strong>Spectral Difference tutorials</strong></a>
+								<span>Python notebooks from the 2023 CCA Fluid Dynamics Summer School.</span></li>
+						</ul>
+					</section>
 
 			</div>
 
@@ -488,9 +506,10 @@ print 'It took ' + i + ' iterations to sort the deck.';</code></pre>
 			<footer id="footer">
 				<div class="inner">
 					<ul class="icons">
-						<li><a href="https://github.com/davidvelasco07" class="icon brands fa-github"><span class="label">Github</span></a></li>
+						<li><a href="https://github.com/davidvelasco07" class="icon brands fa-github"><span class="label">GitHub</span></a></li>
 						<li><a href="https://www.linkedin.com/in/david-velasco-romero-2929381b5" class="icon brands fa-linkedin"><span class="label">LinkedIn</span></a></li>
-						<li><a href="mailto://david.velasco@princeton.edu" class="icon solid fa-envelope"><span class="label">Email</span></a></li>
+						<li><a href="https://orcid.org/0000-0002-6093-891X" class="icon brands fa-orcid"><span class="label">ORCID</span></a></li>
+						<li><a href="mailto:velasco@ias.edu" class="icon solid fa-envelope"><span class="label">Email</span></a></li>
 					</ul>
 					<ul class="copyright">
 						<li>&copy; David A. Velasco-Romero</li><li>Design: <a href="http://html5up.net">HTML5 UP</a></li>
@@ -505,6 +524,7 @@ print 'It took ' + i + ' iterations to sort the deck.';</code></pre>
 			<script src="assets/js/breakpoints.min.js"></script>
 			<script src="assets/js/util.js"></script>
 			<script src="assets/js/main.js"></script>
+			<script src="assets/js/movies.js"></script>
 
 	</body>
 </html>

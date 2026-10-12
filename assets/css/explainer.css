@@ -1,0 +1,103 @@
+/* Shared styles for the interactive explainer pages (sd/, multigrid/). */
+
+@import url("https://fonts.googleapis.com/css?family=Source+Sans+Pro:400,400italic,600");
+
+:root {
+	--bg: #ffffff;
+	--ink: #2f3437;
+	--ink-2: #5a5f62;
+	--ink-3: #8a9296;
+	--line: #e4e8e8;
+	--panel: #f6f8f8;
+	--accent: #2f9e7e;
+	--accent-soft: #d9efe8;
+	--warm: #e08e0b;
+	--red: #d1495b;
+	--blue: #3b6ea5;
+}
+
+* { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; }
+body {
+	margin: 0; background: var(--bg); color: var(--ink-2);
+	font-family: 'Source Sans Pro', Helvetica, Arial, sans-serif; font-size: 18px; line-height: 1.65;
+}
+a { color: var(--accent); text-decoration: none; border-bottom: 1px dotted currentColor; }
+a:hover { color: #23775f; border-bottom-color: transparent; }
+
+.topbar { border-bottom: 1px solid var(--line); background: #1f2a2e; }
+.topbar .wrap { display: flex; justify-content: space-between; align-items: center; padding-top: 0.7em; padding-bottom: 0.7em; }
+.topbar a { color: rgba(255,255,255,0.8); border: 0; font-size: 0.85em; }
+.topbar a:hover { color: #fff; }
+.topbar .sibling { color: rgba(255,255,255,0.55); }
+
+.wrap { max-width: 46em; margin: 0 auto; padding: 0 1.2em; }
+header.title { padding: 3.2em 0 1.4em; }
+header.title .kicker { font-size: 0.8em; letter-spacing: 0.14em; text-transform: uppercase; color: var(--ink-3); margin: 0 0 0.6em; }
+header.title h1 { font-size: 2.3em; line-height: 1.15; font-weight: 600; color: var(--ink); margin: 0 0 0.5em; letter-spacing: -0.015em; text-wrap: balance; }
+header.title p.lede { font-size: 1.15em; line-height: 1.55; color: var(--ink-2); margin: 0; }
+
+h2 { font-size: 1.45em; line-height: 1.25; font-weight: 600; color: var(--ink); margin: 2.6em 0 0.6em; letter-spacing: -0.01em; }
+h3 { font-size: 1.05em; font-weight: 600; color: var(--ink); margin: 1.6em 0 0.4em; }
+p { margin: 0 0 1em; }
+strong { font-weight: 600; color: var(--ink); }
+ol, ul { padding-left: 1.3em; margin: 0 0 1em; }
+li { margin-bottom: 0.35em; }
+.katex { font-size: 1.02em; }
+.eq { margin: 1.1em 0; overflow-x: auto; overflow-y: hidden; text-align: center; }
+
+/* Widgets */
+
+.widget { margin: 1.6em -1.2em 2em; background: var(--panel); border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); padding: 1.1em 1.2em 1.2em; }
+@media (min-width: 52em) { .widget { margin-left: -2.5em; margin-right: -2.5em; border: 1px solid var(--line); border-radius: 10px; padding: 1.3em 1.5em 1.4em; } }
+.widget h3 { margin: 0 0 0.2em; font-size: 0.8em; letter-spacing: 0.12em; text-transform: uppercase; color: var(--ink-3); font-weight: 600; }
+.widget .hint { font-size: 0.85em; color: var(--ink-3); margin: 0 0 0.8em; }
+.widget canvas { display: block; width: 100%; background: #fff; border: 1px solid var(--line); border-radius: 6px; touch-action: none; }
+.widget canvas.pan-y { touch-action: pan-y; }
+
+.controls { display: flex; flex-wrap: wrap; gap: 0.6em 1.3em; align-items: center; margin: 0.9em 0 0; font-size: 0.85em; }
+.controls label { display: inline-flex; align-items: center; gap: 0.5em; color: var(--ink-2); white-space: nowrap; }
+.controls output { font-variant-numeric: tabular-nums; color: var(--ink); min-width: 1.6em; display: inline-block; font-weight: 600; }
+.controls input[type=range] { width: 8.5em; accent-color: var(--accent); }
+.controls input[type=checkbox] { accent-color: var(--accent); width: 1.05em; height: 1.05em; }
+.controls select { font: inherit; padding: 0.25em 0.4em; border: 1px solid #cfd6d6; border-radius: 5px; background: #fff; color: var(--ink); }
+
+button, .btn {
+	font: inherit; font-size: 1em; padding: 0.35em 0.95em; border-radius: 5px; border: 1px solid #c7d0cf; background: #fff; color: var(--ink);
+	cursor: pointer; line-height: 1.4; transition: background 0.15s, border-color 0.15s, color 0.15s;
+}
+button:hover { border-color: var(--accent); color: var(--accent); }
+button.primary { background: var(--accent); border-color: var(--accent); color: #fff; }
+button.primary:hover { background: #23775f; border-color: #23775f; color: #fff; }
+button:disabled { opacity: 0.45; cursor: default; border-color: #c7d0cf; color: var(--ink); }
+button:focus-visible, input:focus-visible, select:focus-visible, a:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+.seg { display: inline-flex; border: 1px solid #c7d0cf; border-radius: 6px; overflow: hidden; background: #fff; }
+.seg button { border: 0; border-radius: 0; border-left: 1px solid #c7d0cf; padding: 0.35em 0.8em; }
+.seg button:first-child { border-left: 0; }
+.seg button[aria-pressed=true] { background: var(--accent); color: #fff; }
+
+.readout { display: flex; flex-wrap: wrap; gap: 0.3em 1.6em; margin: 0.8em 0 0; font-size: 0.85em; color: var(--ink-3); font-variant-numeric: tabular-nums; }
+.readout b { color: var(--ink); font-weight: 600; }
+.legend { display: flex; flex-wrap: wrap; gap: 0.3em 1.3em; margin: 0.7em 0 0; font-size: 0.8em; color: var(--ink-2); }
+.legend i { display: inline-block; width: 1.5em; height: 0; border-top: 3px solid var(--accent); vertical-align: middle; margin-right: 0.45em; }
+.legend i.dot { width: 0.75em; height: 0.75em; border: 2px solid var(--accent); border-radius: 50%; background: #fff; }
+.legend i.dia { width: 0.65em; height: 0.65em; border: 0; background: var(--warm); transform: rotate(45deg); }
+.legend i.sq { width: 0.8em; height: 0.8em; border: 0; background: var(--red); }
+
+.stepcap { min-height: 3.4em; margin: 0.8em 0 0; font-size: 0.92em; color: var(--ink-2); }
+.stepcap b { color: var(--ink); }
+
+.note { font-size: 0.88em; color: var(--ink-3); border-left: 3px solid var(--line); padding-left: 0.9em; margin: 1.4em 0; }
+.grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 1em; }
+@media (max-width: 40em) { .grid2 { grid-template-columns: 1fr; } }
+
+figure.movie { margin: 1.4em 0; }
+figure.movie video { width: 100%; height: auto; border-radius: 6px; background: #f4f1e6; display: block; cursor: pointer; }
+figure.movie-square { max-width: 34em; margin-left: auto; margin-right: auto; }
+figure.movie-native { max-width: 432px; margin-left: auto; margin-right: auto; }
+figure.movie figcaption { font-size: 0.85em; color: var(--ink-3); margin-top: 0.5em; }
+
+footer.end { margin: 4em 0 0; padding: 2em 0 3em; border-top: 1px solid var(--line); font-size: 0.85em; color: var(--ink-3); }
+footer.end ul { list-style: none; padding: 0; }
+footer.end li { margin-bottom: 0.5em; }

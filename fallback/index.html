@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="utf-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1" />
+	<title>The fallback scheme, hands-on · David A. Velasco-Romero</title>
+	<meta name="description" content="An interactive look at a posteriori limiting for the Spectral Difference method: follow one stage as it is checked and repaired, change the tolerance, and watch the limiter switch on when a shock forms." />
+	<meta property="og:title" content="The fallback scheme, hands-on" />
+	<meta property="og:description" content="How a high-order Spectral Difference scheme checks its own updates and falls back to second order only where it must." />
+	<meta property="og:type" content="article" />
+	<link rel="icon" href="../images/favicon.svg" type="image/svg+xml" />
+	<link rel="stylesheet" href="../assets/css/explainer.css" />
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css" />
+	<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+	<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"></script>
+	<script defer src="../assets/js/sd-demo.js"></script>
+	<script defer src="../assets/js/movies.js"></script>
+</head>
+<body>
+	<nav class="topbar"><div class="wrap">
+		<a href="../">← David A. Velasco-Romero</a>
+		<a class="sibling" href="../multigrid/">Geometric multigrid →</a>
+	</div></nav>
+
+	<main class="wrap">
+		<header class="title">
+			<p class="kicker">Interactive explainer</p>
+			<h1>The fallback scheme, hands-on</h1>
+			<p class="lede">A high-order scheme is at its best where the flow is smooth and at its worst at a shock. Instead of
+				limiting the solution everywhere in advance, a Spectral Difference scheme can let each update go ahead, inspect
+				the result, and fall back to a robust second-order scheme only in the cells where it failed. This page takes
+				that repair apart, one move at a time.</p>
+		</header>
+
+		<h2>Why a repair is needed</h2>
+		<p>A polynomial cannot follow a jump. It overshoots on both sides, and the overshoots do not shrink when the mesh is
+			refined. For the Euler equations an overshoot can mean a negative density or pressure, and the simulation stops.
+			The <a href="../sd/#discontinuity">advection demo of the Spectral Difference page</a> shows it at any order above one.</p>
+		<p>The classical cure acts <em>a priori</em>: before each update, slopes or high modes are reduced wherever a sensor
+			judges the solution too rough. The sensor has to guess where trouble will appear, and what it removes from smooth
+			flow by mistake is lost. The alternative, introduced by Clain, Diot &amp; Loubère (2011) under the name MOOD, acts
+			<em>a posteriori</em>: take the unlimited step, look at what came out, and redo only what is not acceptable.</p>
+		<p>That needs two ingredients: a robust scheme to fall back on that can be mixed with the high-order one cell by
+			cell, and a test that tells an acceptable value from a bad one.</p>
+
+		<h2>The finite volumes inside an element</h2>
+		<p>The first ingredient comes for free. A Spectral Difference (SD) element of degree \(p\) evaluates its flux at
+			\(p+2\) flux points, and the \(p+1\) intervals between them are <strong>control volumes</strong>. Integrating
+			the SD update over one of them gives, exactly,</p>
+		<div class="eq">\[ \frac{\mathrm{d} \bar u_i}{\mathrm{d} t} = - \frac{f_h(x_{i+1/2}) - f_h(x_{i-1/2})}{\Delta x_i} , \]</div>
+		<p>with \(\bar u_i\) the average of the solution over the control volume and \(f_h\) the flux polynomial
+			(<a href="../sd/">how it is built</a>). So the SD scheme is already a finite-volume scheme on these control
+			volumes, with an unusually accurate flux at their faces. The fallback is a second finite-volume scheme on the
+			<em>same</em> control volumes. Both are differences of fluxes at the same faces, so the flux at any one face can
+			be taken from either scheme and the result is still conservative.</p>
+
+		<h2>One stage, move by move</h2>
+		<p>Every stage of the time integrator goes through the same five moves. The figure shows them for a square pulse
+			advected to the right, \(f = u\), on eight fourth-order elements.</p>
+
+		<section class="widget" aria-label="One stage of the a posteriori limiting, move by move">
+			<h3>Anatomy of a limited stage</h3>
+			<p class="hint">Bars: averages over the control volumes. Dashed: exact solution. The picture shows the first stage of the next time step; the other stages are treated the same way.</p>
+			<canvas id="fb-canvas" class="pan-y"></canvas>
+			<div class="controls">
+				<span class="seg" id="fb-steps" role="group" aria-label="Move">
+					<button type="button" aria-pressed="true">1</button><button type="button">2</button><button type="button">3</button><button type="button">4</button><button type="button">5</button>
+				</span>
+				<button type="button" id="fb-next" class="primary">Next time step</button>
+				<button type="button" id="fb-play">Play</button>
+				<button type="button" id="fb-reset">Reset</button>
+			</div>
+			<div class="controls">
+				<label>order <input type="range" id="fb-order" min="3" max="8" step="1" value="4" /> <output id="fb-order-out">4</output></label>
+				<label>profile <select id="fb-profile"><option value="square">Square</option><option value="gauss">Gaussian</option><option value="sine">Sine</option></select></label>
+				<label>tolerance <select id="fb-tol"><option value="1e-5">10⁻⁵</option><option value="1e-3">10⁻³</option><option value="1e-2">10⁻²</option><option value="5e-2">5 × 10⁻²</option></select></label>
+			</div>
+			<p class="stepcap" id="fb-cap"></p>
+			<div class="readout">
+				<span>time step <b id="fb-t">0</b></span>
+				<span>outside their bounds <b id="fb-nad">0</b></span>
+				<span>accepted as smooth extrema <b id="fb-sed">0</b></span>
+				<span>rejected <b id="fb-flag">0</b></span>
+				<span>fluxes replaced <b id="fb-faces">0</b></span>
+			</div>
+		</section>
+
+		<h3>Things to try</h3>
+		<ul id="fb-try">
+			<li><strong>Follow the pulse.</strong> Go to move 3 and press Play. The rejected volumes sit where the smeared
+				edges of the pulse meet the flat parts, and travel with them. A few also appear on the flat parts themselves:
+				there the band has no width, and a ripple of one part in 10⁵ is enough to leave it.</li>
+			<li><strong>A smooth profile.</strong> Choose the sine. The crest and the trough leave their bands at every step,
+				as they must in order to move. They are marked blue and kept. Nothing is rejected, and the scheme is the plain
+				high-order one.</li>
+			<li><strong>A smooth maximum.</strong> Choose the Gaussian. Its top is marked blue and kept in the same way. The few
+				red marks are far out in the tails, where the profile is flat to five digits and the band has no width.</li>
+			<li><strong>The tolerance.</strong> Raise it to 10⁻³: the rejections in the tails of the Gaussian and on the flat
+				parts of the square are gone, and those at the edges of the square become rarer. At 10⁻² and above the edges
+				are let through with a visible overshoot.</li>
+		</ul>
+
+		<h2>The checks</h2>
+		<p>The candidate value of a control volume is rejected if it fails the first test without being excused by the
+			second, or if it fails the third.</p>
+		<ul>
+			<li><strong>Numerical admissibility.</strong> A scheme that only transports the solution cannot create new extrema.
+				With \(\bar u^{\,n}\) the values before the stage and \(\bar u^{\,*}\) the candidate, the test is a discrete
+				maximum principle over the volume and its face neighbours,
+				<div class="eq">\[ m_i - \varepsilon\,|m_i| \;\le\; \bar u_i^{\,*} \;\le\; M_i + \varepsilon\,|M_i| , \qquad
+					m_i = \min\left(\bar u^{\,n}_{i-1}, \bar u^{\,n}_{i}, \bar u^{\,n}_{i+1}\right), \quad
+					M_i = \max\left(\bar u^{\,n}_{i-1}, \bar u^{\,n}_{i}, \bar u^{\,n}_{i+1}\right) . \]</div>
+				The tolerance \(\varepsilon\) keeps round-off and harmless ripples from triggering it; typical values are
+				\(10^{-5}\) to \(10^{-3}\). For the Euler equations the test is applied to density and pressure.</li>
+			<li><strong>Smooth extrema.</strong> A genuine maximum or minimum of a smooth solution violates that principle
+				whenever it moves, and clipping it would cost the scheme its accuracy there. So a volume that fails the first test
+				is examined again: the change of the candidate's slope towards each neighbour is compared with the change
+				predicted by the local curvature. If the two agree in the volume and in both of its neighbours, the profile is
+				locally a smooth parabola and the value is accepted.</li>
+			<li><strong>Physical admissibility.</strong> Density and pressure must be positive. A candidate that is not is
+				rejected whatever the other tests say.</li>
+		</ul>
+
+		<h2>The repair</h2>
+		<p>The fallback is a second-order Godunov scheme, MUSCL–Hancock, applied to the control volumes: a slope is built in
+			each one from its neighbours and limited (minmod in the demos), and a Riemann problem is solved at every face.
+			It is diffusive and it does not overshoot, which is what is wanted in the few places where it is used.</p>
+		<p>At a face of a rejected volume the flux is taken from the fallback; elsewhere it is the SD flux. In general the
+			two are mixed with a weight \(\theta\) defined at the faces,</p>
+		<div class="eq">\[ F = \theta\, F^{\,\mathrm{fallback}} + (1 - \theta)\, F^{\,\mathrm{SD}} , \]</div>
+		<p>with \(\theta = 1\) at the faces of a rejected volume. The figure above uses \(\theta = 0\) everywhere else; the
+			production codes let \(\theta\) fall to ¾ and ¼ over the next two faces, so that the scheme does not change
+			abruptly from one volume to the next. The update is then repeated with the mixed fluxes. Because each face still
+			carries a single flux, what leaves one volume enters its neighbour, at every order and with any \(\theta\).</p>
+		<p>All of this happens at every stage of the time integrator, on the control volumes of every element at once. In two
+			and three dimensions the control volumes are tensor products of the one-dimensional ones and the same moves are
+			applied face by face, direction by direction.</p>
+
+		<h2>A shock that forms on its own</h2>
+		<p>In a gas, shocks are not put in by hand: they form. The simplest model is Burgers' equation, \(f = u^2/2\), in
+			which each value travels at a speed equal to itself, so the crest of a wave catches up with the trough ahead of it.
+			A sine wave stays smooth until \(t = 1/\pi \approx 0.32\) and carries a shock from then on. A limiter that acts
+			after the fact has nothing to do before that time and a great deal to do after it.</p>
+
+		<section class="widget" aria-label="Burgers' equation: a shock forms from smooth data">
+			<h3>Burgers' equation, from a sine wave</h3>
+			<p class="hint">Green: the polynomial inside each element. Dashed: a reference solution on a fine mesh. Red: control volumes that fell back to second order in the last step. The strip below records their fraction over time.</p>
+			<canvas id="bg-canvas" class="pan-y"></canvas>
+			<div class="controls">
+				<button type="button" id="bg-play" class="primary">Play</button>
+				<button type="button" id="bg-reset">Reset</button>
+				<label>order <input type="range" id="bg-order" min="1" max="8" step="1" value="4" /> <output id="bg-order-out">4</output></label>
+				<label>elements <input type="range" id="bg-n" min="0" max="3" step="1" value="1" /> <output id="bg-n-out">16</output></label>
+				<label><input type="checkbox" id="bg-limit" checked /> a posteriori limiting</label>
+				<label>speed <input type="range" id="bg-speed" min="-2" max="2" step="1" value="0" /> <output id="bg-speed-out">1×</output></label>
+			</div>
+			<div class="readout">
+				<span>time <b id="bg-t">0.00</b></span>
+				<span>cells at second order <b id="bg-flag">–</b></span>
+				<span>first fallback at <b id="bg-first">–</b></span>
+			</div>
+		</section>
+
+		<h3>Things to try</h3>
+		<ul id="bg-try">
+			<li><strong>Silence, then the shock.</strong> Press Play. The red curve in the strip stays at zero while the wave
+				steepens, and leaves it at \(t = 0.28\), shortly before the shock forms, when the front has become too steep
+				for sixteen elements. From then on only the few control volumes around the shock are recomputed.</li>
+			<li><strong>Without the repair.</strong> Untick the limiting and play again. Up to the first fallback the two runs
+				are identical; after it the unlimited one rings on both sides of the jump.</li>
+			<li><strong>More elements.</strong> With 32 or 64 elements the wave stays resolved for longer and the first
+				fallback moves towards \(t = 0.32\). About five volumes are repaired per step whatever the number of elements,
+				so their share halves each time the mesh is doubled.</li>
+			<li><strong>Order 2.</strong> The smooth-extremum test needs a parabola, so it is not used at order 2. The crest and
+				the trough are then repaired from the first step on, as in any limited second-order scheme.</li>
+		</ul>
+
+		<h2 id="real">In real simulations</h2>
+		<p>The same construction runs in the production codes for the Euler and Navier–Stokes equations, and the share of the
+			flow that is repaired stays small. In the two runs below, the control volumes that fell back are marked in red.</p>
+
+		<figure class="movie">
+			<video muted loop playsinline preload="metadata" width="1920" height="960" poster="../images/posters/sd_dmr_troubles.jpg" src="../videos/sd_dmr_troubles.mp4"></video>
+			<figcaption>Double Mach reflection of a Mach 10 shock, fourth order, 800×200 elements. Top: density. Bottom: the
+				control volumes that fell back (red, drawn enlarged). They trace the shocks and stay under half a per cent of
+				the cells.</figcaption>
+		</figure>
+		<figure class="movie movie-square">
+			<video muted loop playsinline preload="metadata" width="1080" height="1080" poster="../images/posters/kh_sd_troubles.jpg" src="../videos/kh_sd_troubles.mp4"></video>
+			<figcaption>Kelvin–Helmholtz instability, fourth order, 800×800 elements, with the control volumes that fell back
+				marked in red (drawn enlarged). They follow the mixing layers and never exceed 0.5% of the cells; everywhere
+				else the scheme stays fourth order.</figcaption>
+		</figure>
+
+		<p class="note">The demos solve linear advection and Burgers' equation with a third-order strong-stability-preserving
+			Runge–Kutta integrator and apply the checks at every stage. The detection (the relaxed maximum principle with the
+			smooth-extremum test) and the fallback (MUSCL with a minmod slope on the unequal control volumes) follow the
+			reference implementation. The codes of the papers integrate in time with ADER, correct each of its time slices in
+			the same way, and add the flux blending and the positivity checks described above.</p>
+
+		<h2>From this page to the papers</h2>
+		<ul>
+			<li><strong>Paper I</strong> introduces the scheme for the Euler equations in one and two dimensions.
+				<a href="https://arxiv.org/abs/2209.06597">Velasco-Romero, Han Veiga &amp; Teyssier (2023)</a></li>
+			<li><strong>Paper II</strong> takes it to low Mach numbers and stratified atmospheres, where the checks are applied
+				to the departure from a hydrostatic equilibrium.
+				<a href="https://arxiv.org/abs/2405.11063">Velasco-Romero &amp; Teyssier (2025)</a></li>
+			<li><strong>Paper III</strong> adds viscosity and diffusion at arbitrary order.
+				<a href="https://arxiv.org/abs/2604.07339">Velasco-Romero &amp; Teyssier (2026)</a></li>
+		</ul>
+		<p>The codes are public: <a href="https://github.com/davidvelasco07/spd">spd</a> in Python, which runs on CPUs and GPUs,
+			and <a href="https://github.com/davidvelasco07/spd_K">spd_K</a> in C++ with Kokkos.</p>
+
+		<footer class="end">
+			<p><strong>Further reading</strong></p>
+			<ul>
+				<li>Clain, Diot &amp; Loubère (2011), <em>A high-order finite volume method for systems of conservation laws: Multi-dimensional Optimal Order Detection (MOOD)</em>, J. Comput. Phys.</li>
+				<li>Dumbser, Zanotti, Loubère &amp; Diot (2014), <em>A posteriori subcell limiting of the discontinuous Galerkin finite element method for hyperbolic conservation laws</em>, J. Comput. Phys.</li>
+				<li>Vilar (2019), <em>A posteriori correction of high-order discontinuous Galerkin scheme through subcell finite volume formulation and flux reconstruction</em>, J. Comput. Phys.</li>
+				<li>van Leer (1979), <em>Towards the ultimate conservative difference scheme V: a second-order sequel to Godunov's method</em>, J. Comput. Phys.</li>
+			</ul>
+			<p><a href="../">← Back to the main page</a> · <a href="../sd/">The Spectral Difference method explainer</a> · <a href="../multigrid/">Geometric multigrid explainer →</a></p>
+		</footer>
+	</main>
+
+	<script>
+		document.addEventListener('DOMContentLoaded', function () {
+			if (window.renderMathInElement) renderMathInElement(document.body, { delimiters: [{ left: '\\[', right: '\\]', display: true }, { left: '\\(', right: '\\)', display: false }] });
+		});
+	</script>
+</body>
+</html>

@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="utf-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1" />
+	<title>Geometric multigrid, hands-on · David A. Velasco-Romero</title>
+	<meta name="description" content="An interactive introduction to geometric multigrid for self-gravity: watch relaxation smooth the error, step through a V-cycle level by level, and drag point masses around a live 2D Poisson solver." />
+	<meta property="og:title" content="Geometric multigrid, hands-on" />
+	<meta property="og:description" content="An interactive introduction to geometric multigrid solvers for self-gravity." />
+	<meta property="og:type" content="article" />
+	<link rel="icon" href="../images/favicon.svg" type="image/svg+xml" />
+	<link rel="stylesheet" href="../assets/css/explainer.css" />
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css" />
+	<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+	<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"></script>
+	<script defer src="../assets/js/mg-demo.js"></script>
+	<script defer src="../assets/js/movies.js"></script>
+</head>
+<body>
+	<nav class="topbar"><div class="wrap">
+		<a href="../">← David A. Velasco-Romero</a>
+		<a class="sibling" href="../sd/">The Spectral Difference method →</a>
+	</div></nav>
+
+	<main class="wrap">
+		<header class="title">
+			<p class="kicker">Interactive explainer</p>
+			<h1>Geometric multigrid, hands-on</h1>
+			<p class="lede">Gravity couples every cell of a simulation to every other cell. Multigrid computes the potential in
+				a time proportional to the number of cells, by working on a ladder of coarser and coarser copies of the grid.
+				Three experiments show why that works. Everything below runs live in your browser.</p>
+		</header>
+
+		<h2>A global problem at every step</h2>
+		<p>The gravitational potential \(\Phi\) of a gas with density \(\rho\) obeys the Poisson equation,</p>
+		<div class="eq">\[ \nabla^2 \Phi = 4\pi G \rho . \]</div>
+		<p>The fluid equations are local: within one time step a cell only exchanges fluxes with its neighbours. The Poisson
+			equation is not. Move one mass and the potential changes everywhere at once. A self-gravitating simulation has
+			to solve it at every step, in lock-step with the gas, so the cost of that solve decides what is affordable.</p>
+
+		<figure class="movie movie-square">
+			<video muted loop playsinline preload="metadata" width="1080" height="1080" poster="../images/posters/mg/binary_orbit.jpg" src="../videos/mg/binary_orbit.mp4"></video>
+			<figcaption>Gravitational potential of two orbiting masses in AthenaK, with equipotential lines. The multigrid solver is
+				called at every step; the mesh blocks refine around each mass and follow it.</figcaption>
+		</figure>
+
+		<h2>Relaxation only removes the rough part</h2>
+		<p>On a grid of spacing \(h\) the equation says that every value equals the average of its neighbours, minus a
+			source term. In one dimension, with \(f = 4\pi G\rho\):</p>
+		<div class="eq">\[ \Phi_i = \tfrac{1}{2}\left(\Phi_{i-1} + \Phi_{i+1} - h^2 f_i\right) . \]</div>
+		<p>The simplest solver applies this rule to every cell and repeats. It is called relaxation, and it does converge,
+			slowly. To see why it is slow, look at the error instead of the solution. Below, the error starts as the sum of a
+			smooth, a medium and a rough wave.</p>
+
+		<section class="widget" aria-label="Relaxation as a smoother">
+			<h3>Relaxation as a smoother</h3>
+			<p class="hint">Top: the error on a grid of 64 cells. Bottom: how much of each wave it contains.</p>
+			<canvas id="sm-canvas" class="pan-y"></canvas>
+			<div class="controls">
+				<button type="button" id="sm-1" class="primary">1 sweep</button>
+				<button type="button" id="sm-10">10 sweeps</button>
+				<button type="button" id="sm-play">Play</button>
+				<button type="button" id="sm-reset">Reset</button>
+				<label>method <select id="sm-kind"><option value="gs">Gauss–Seidel</option><option value="rb">Red–black Gauss–Seidel</option><option value="jacobi">Damped Jacobi</option></select></label>
+				<label>error <select id="sm-init"><option value="waves">three waves</option><option value="random">random</option></select></label>
+			</div>
+			<div class="readout"><span>sweeps <b id="sm-sweeps">0</b></span><span>largest error <b id="sm-max">0</b></span></div>
+		</section>
+
+		<p>After a handful of sweeps the rough wave is gone and the curve is smooth. The smooth wave has hardly changed, and
+			it will take hundreds of sweeps to remove. A sweep only moves information by one cell, so an error that spans
+			the whole grid needs a number of sweeps that grows with the square of the number of cells. Relaxation is a poor
+			solver and an excellent smoother.</p>
+
+		<figure class="movie">
+			<video muted loop playsinline preload="metadata" width="1920" height="780" poster="../images/posters/mg/relaxation.jpg" src="../videos/mg/relaxation.mp4"></video>
+			<figcaption>The same behaviour on the potential of a binary, in two dimensions: the solution, the residual, and the error
+				that is left for three relaxation methods. After 400 sweeps between three quarters and nine tenths of it is still there.</figcaption>
+		</figure>
+
+		<h2>A smooth error is a rough error on a coarser grid</h2>
+		<p>Once the error is smooth it can be represented on a grid with half as many cells in each direction and nothing is
+			lost. On that grid the same wave spans half as many cells, so relative to the grid it is rougher, and relaxation
+			is effective again. A sweep there is also cheaper: two times in one dimension, eight times in three.</p>
+		<p>What is passed down is the equation for the error, which has the same form as the original one with the residual
+			\(r = f - \nabla^2\Phi\) as its source. Two operators connect the grids: <strong>restriction</strong> averages
+			fine values onto the coarse grid, and <strong>prolongation</strong> interpolates coarse values back. Apply the idea
+			recursively until the grid is so small that solving on it is trivial, and you have a V-cycle.</p>
+
+		<section class="widget" aria-label="One V-cycle step by step">
+			<h3>One V-cycle, step by step</h3>
+			<p class="hint">Left: where we are in the cycle. Right: the error each grid still has to remove, each row on its own scale.</p>
+			<canvas id="vc-canvas" class="pan-y"></canvas>
+			<div class="controls">
+				<button type="button" id="vc-step" class="primary">Step</button>
+				<button type="button" id="vc-run">Run a full cycle</button>
+				<button type="button" id="vc-reset">Reset</button>
+			</div>
+			<p class="stepcap" id="vc-cap"></p>
+			<div class="readout"><span>largest error after each cycle: <b id="vc-hist"></b></span></div>
+		</section>
+
+		<p>Each cycle divides the error by about the same factor, whatever the resolution, and its cost is that of a few
+			sweeps on the finest grid: the coarser grids add \(1/8 + 1/64 + \dots\) in three dimensions, one seventh in
+			total. A fixed number of cycles therefore solves the problem, and the work is proportional to the number of
+			cells.</p>
+
+		<figure class="movie">
+			<video muted loop playsinline preload="metadata" width="1920" height="780" poster="../images/posters/mg/vcycle_anatomy.jpg" src="../videos/mg/vcycle_anatomy.mp4"></video>
+			<figcaption>One V-cycle on the three-dimensional potential of a binary, from 257³ points down to 3³ and back. Left: the solution
+				on the finest grid, the correction on the coarser ones. Middle: the residual. Right: the position in the cycle.</figcaption>
+		</figure>
+
+		<figure class="movie">
+			<video muted loop playsinline preload="metadata" width="1920" height="780" poster="../images/posters/mg/vcycle_convergence.jpg" src="../videos/mg/vcycle_convergence.mp4"></video>
+			<figcaption>Twelve V-cycles on the same problem. Each one makes the residual about ten times smaller.</figcaption>
+		</figure>
+
+		<h2>Gravity in a box</h2>
+		<p>The same algorithm in two dimensions, solving for the potential of three masses in a box whose walls are held at
+			zero. The grid has 128×128 cells and seven coarser levels beneath it. Drag the masses.</p>
+
+		<section class="widget" aria-label="Two-dimensional gravity solver">
+			<h3>Relaxation against multigrid</h3>
+			<p class="hint">Drag the white discs. The solver keeps running from wherever the potential currently is.</p>
+			<div class="grid2">
+				<canvas id="gv-canvas"></canvas>
+				<div>
+					<canvas id="gv-chart" class="pan-y"></canvas>
+					<div class="controls">
+						<span class="seg" id="gv-mode" role="group" aria-label="Solver">
+							<button type="button" data-mode="mg" aria-pressed="true">Multigrid</button><button type="button" data-mode="gs" aria-pressed="false">Relaxation only</button>
+						</span>
+						<span class="seg" id="gv-view" role="group" aria-label="Field shown">
+							<button type="button" data-view="phi" aria-pressed="true">Potential</button><button type="button" data-view="err" aria-pressed="false">Error</button>
+						</span>
+					</div>
+					<div class="controls">
+						<button type="button" id="gv-zero" class="primary">Start from zero</button>
+						<button type="button" id="gv-pause">Pause</button>
+						<label id="gv-sweeps-wrap" style="visibility:hidden">sweeps per frame <input type="range" id="gv-sweeps" min="1" max="32" step="1" value="4" /> <output id="gv-sweeps-out">4</output></label>
+					</div>
+					<div class="readout"><span>work <b id="gv-work">0</b> sweeps</span><span>error <b id="gv-err">1</b></span></div>
+				</div>
+			</div>
+		</section>
+
+		<h3>Things to try</h3>
+		<ul>
+			<li><strong>From nothing.</strong> Choose “Relaxation only” and press “Start from zero”. The wells grow outwards from
+				each mass, a cell per sweep. Now choose “Multigrid” and start from zero again.</li>
+			<li><strong>The error that relaxation leaves.</strong> While relaxation is running, switch the view to “Error”. What
+				remains is large and smooth, which is exactly what a coarser grid represents well.</li>
+			<li><strong>A moving source.</strong> Drag a mass under each solver. With relaxation the potential trails behind the
+				mass; with multigrid it follows.</li>
+			<li><strong>The chart.</strong> It plots the error against the work spent, counted in sweeps of the finest grid. A V-cycle
+				costs about seven of them.</li>
+		</ul>
+
+		<h2>Full multigrid</h2>
+		<p>A V-cycle improves a guess. Full multigrid builds the first guess itself: it solves the problem on the coarsest
+			grid, interpolates that solution to the next grid as a starting point, runs a V-cycle there, and continues up to
+			the finest level. By the time the finest grid is reached the guess is already close, and the whole pass costs
+			little more than a V-cycle or two.</p>
+
+		<figure class="movie">
+			<video muted loop playsinline preload="metadata" width="1920" height="780" poster="../images/posters/mg/fmg.jpg" src="../videos/mg/fmg.mp4"></video>
+			<figcaption>Full multigrid on the same problem, stage by stage: the solution, the residual, and the nested sequence of V-cycles
+				from the coarsest grid to the finest.</figcaption>
+		</figure>
+
+		<h2>What a production solver adds</h2>
+		<p>The multigrid self-gravity solver in <a href="https://github.com/IAS-Astrophysics/athenak">AthenaK</a> follows the design
+			of Tomida &amp; Stone (2023) for Athena++. It differs from the toy above in a few ways that matter.</p>
+		<ul>
+			<li><strong>Three dimensions, on GPUs.</strong> The smoother is red–black Gauss–Seidel: cells are coloured like a
+				checkerboard, and all cells of one colour can be updated at the same time, which is what a GPU needs.</li>
+			<li><strong>Isolated boundaries.</strong> A star or a binary does not sit in a box with walls at zero potential.
+				The potential at the boundary is obtained from a multipole expansion of the mass inside.</li>
+			<li><strong>Mesh refinement.</strong> With refined patches a level may cover only part of the domain. The solver uses
+				the Full Approximation Scheme, in which the coarse levels carry the full solution instead of a correction, so that
+				levels stay consistent where they overlap.</li>
+		</ul>
+
+		<figure class="movie">
+			<video muted loop playsinline preload="metadata" width="1920" height="780" poster="../images/posters/mg/fas_vcycle.jpg" src="../videos/mg/fas_vcycle.mp4"></video>
+			<figcaption>The same V-cycle in the Full Approximation Scheme: the coarse grids now hold the solution itself.</figcaption>
+		</figure>
+
+		<h3>Refinement must not perturb the orbit</h3>
+		<p>The delicate part of mesh refinement is the boundary between a coarse and a fine block. Values there have to be
+			interpolated, and an interpolation that does not conserve mass acts as a small spurious force. A binary is a
+			sensitive test: over a few orbits that force changes the separation. In the comparison below both runs use two levels of
+			refinement that follow the masses.</p>
+
+		<figure class="movie">
+			<video muted loop playsinline preload="metadata" width="1920" height="960" poster="../images/posters/mg/binary_amr_compare.jpg" src="../videos/mg/binary_amr_compare.mp4"></video>
+			<figcaption>Left: mass-conserving prolongation; the masses stay on the analytic orbit (dashed). Right: plain interpolation at
+				the coarse–fine boundaries; the orbit drifts. Thin lines are the mesh blocks.</figcaption>
+		</figure>
+
+		<footer class="end">
+			<p><strong>Further reading</strong></p>
+			<ul>
+				<li>Briggs, Henson &amp; McCormick (2000), <em>A Multigrid Tutorial</em>, 2nd edition, SIAM.</li>
+				<li>Trottenberg, Oosterlee &amp; Schüller (2001), <em>Multigrid</em>, Academic Press.</li>
+				<li>Tomida &amp; Stone (2023), <em>The Athena++ adaptive mesh refinement framework: multigrid solvers for self-gravity</em>, ApJS 266, 7.</li>
+			</ul>
+			<p><a href="../">← Back to the main page</a> · <a href="../sd/">The Spectral Difference method explainer →</a> · <a href="../fallback/">The fallback scheme explainer</a></p>
+		</footer>
+	</main>
+
+	<script>
+		document.addEventListener('DOMContentLoaded', function () {
+			if (window.renderMathInElement) renderMathInElement(document.body, { delimiters: [{ left: '\\[', right: '\\]', display: true }, { left: '\\(', right: '\\)', display: false }] });
+		});
+	</script>
+</body>
+</html>

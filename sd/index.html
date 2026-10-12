@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="utf-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1" />
+	<title>The Spectral Difference method, hands-on · David A. Velasco-Romero</title>
+	<meta name="description" content="An interactive introduction to the Spectral Difference method with a posteriori limiting: drag the solution inside an element, follow one update step by step, and advect a square wave at orders 1 to 8." />
+	<meta property="og:title" content="The Spectral Difference method, hands-on" />
+	<meta property="og:description" content="An interactive introduction to high-order Spectral Difference schemes with a posteriori limiting." />
+	<meta property="og:type" content="article" />
+	<link rel="icon" href="../images/favicon.svg" type="image/svg+xml" />
+	<link rel="stylesheet" href="../assets/css/explainer.css" />
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css" />
+	<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+	<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"></script>
+	<script defer src="../assets/js/sd-demo.js"></script>
+	<script defer src="../assets/js/movies.js"></script>
+</head>
+<body>
+	<nav class="topbar"><div class="wrap">
+		<a href="../">← David A. Velasco-Romero</a>
+		<a class="sibling" href="../fallback/">The fallback scheme →</a>
+	</div></nav>
+
+	<main class="wrap">
+		<header class="title">
+			<p class="kicker">Interactive explainer</p>
+			<h1>The Spectral Difference method, hands-on</h1>
+			<p class="lede">A finite-volume scheme stores one number per cell. A Spectral Difference scheme stores a polynomial.
+				This page shows what that buys, what goes wrong at a discontinuity, and how checking every update after the
+				fact repairs it. Everything below runs live in your browser.</p>
+		</header>
+
+		<h2>One polynomial per element</h2>
+		<p>Take a conservation law in one dimension,</p>
+		<div class="eq">\[ \frac{\partial u}{\partial t} + \frac{\partial f(u)}{\partial x} = 0 , \]</div>
+		<p>and cut the domain into elements. Inside each element the Spectral Difference (SD) method keeps the solution at
+			\(p+1\) <strong>solution points</strong> and represents it by the polynomial of degree \(p\) that passes through them.
+			The scheme is then of order \(p+1\). A second set of \(p+2\) <strong>flux points</strong>, the two faces of the element
+			plus \(p\) points in between, is where the flux is evaluated.</p>
+		<p>One update has four moves, and the figure walks through them for advection, \(f = u\). Drag the circles to change
+			the solution and see how each move responds.</p>
+
+		<section class="widget" aria-label="Anatomy of a Spectral Difference update">
+			<h3>Anatomy of an update</h3>
+			<p class="hint">Three elements with periodic ends. Drag any circle up or down.</p>
+			<canvas id="anat-canvas"></canvas>
+			<div class="controls">
+				<span class="seg" id="anat-steps" role="group" aria-label="Step">
+					<button type="button" aria-pressed="true">1</button><button type="button">2</button><button type="button">3</button><button type="button">4</button><button type="button">5</button>
+				</span>
+				<label>degree \(p\) <input type="range" id="anat-p" min="1" max="6" step="1" value="3" /> <output id="anat-p-out">3</output></label>
+				<button type="button" id="anat-advance" class="primary">Advance</button>
+				<button type="button" id="anat-reset">Reset</button>
+			</div>
+			<p class="stepcap" id="anat-cap"></p>
+			<div class="legend">
+				<span><i class="dot"></i>solution points</span>
+				<span><i class="dia"></i>flux points</span>
+				<span><i></i>solution polynomial</span>
+				<span><i style="border-top:3px dashed var(--warm)"></i>flux polynomial</span>
+				<span><i style="border-top-color:var(--blue)"></i>time derivative</span>
+			</div>
+		</section>
+
+		<p>In symbols, with \(f_h\) the flux polynomial of degree \(p+1\), the update at solution point \(x_j\) is</p>
+		<div class="eq">\[ \frac{\mathrm{d} u_j}{\mathrm{d} t} = - \left.\frac{\partial f_h}{\partial x}\right|_{x_j} . \]</div>
+		<p>There is no integral to compute and no mass matrix to invert, which is what makes the method cheap per degree of
+			freedom and a good fit for GPUs. The interior flux points sit at the Gauss–Legendre points; with that choice the
+			scheme is linearly stable at every order.</p>
+
+		<h2>The finite volumes hidden inside</h2>
+		<p>The strip at the bottom of the figure shows the intervals between consecutive flux points. Integrate the update
+			over one of them and the derivative of the flux polynomial integrates exactly to a difference of two flux values:</p>
+		<div class="eq">\[ \frac{\mathrm{d} \bar u_i}{\mathrm{d} t} = - \frac{f_h(x_{i+1/2}) - f_h(x_{i-1/2})}{\Delta x_i} . \]</div>
+		<p>So an SD scheme is also a finite-volume scheme on \(p+1\) unequal control volumes per element, with \(\bar u_i\)
+			the average of the polynomial over each of them, and with an unusually accurate flux at their faces. This
+			second reading is what makes the repair below possible: a flux at one face can be swapped for a more robust one
+			and the scheme remains conservative.</p>
+
+		<h2>What high order buys</h2>
+		<p>For smooth solutions the error of a scheme of order \(q\) falls like \(h^{q}\). The test below advects a sine wave
+			once around a periodic domain and measures the error for six orders at the same four numbers of degrees of
+			freedom. At 192 degrees of freedom the first-order scheme still has an error of 2 × 10⁻²; the eighth-order one
+			has reached 10⁻¹³, the limit of double precision.</p>
+
+		<section class="widget" aria-label="Convergence test">
+			<h3>Convergence at equal degrees of freedom</h3>
+			<p class="hint">Each point is a full simulation run in your browser. Time integration has the same order as the space discretisation.</p>
+			<canvas id="conv-canvas" class="pan-y"></canvas>
+			<div class="controls"><button type="button" id="conv-run" class="primary">Run the test</button></div>
+		</section>
+
+		<h2 id="discontinuity">What goes wrong at a discontinuity, and the repair</h2>
+		<p>A polynomial cannot follow a jump. It overshoots on both sides, and the overshoots do not shrink when the mesh is
+			refined. For the Euler equations an overshoot can mean a negative density or pressure, and the simulation stops.</p>
+		<p>The usual cure limits the solution everywhere before it is used. We do the opposite and limit <em>a posteriori</em>:</p>
+		<ol>
+			<li>Compute a candidate update with the high-order fluxes, as if nothing could go wrong.</li>
+			<li>Check every control volume of the candidate. Its new value must stay within the range of its neighbours' old
+				values, unless it sits at a smooth extremum, which is detected separately and left alone. For the Euler equations,
+				density and pressure must also remain positive.</li>
+			<li>For the control volumes that fail, replace the fluxes at their faces by those of a robust second-order
+				finite-volume scheme, and redo the update there.</li>
+		</ol>
+		<p>Only the cells that need help are touched, so the solution keeps its high order wherever the flow is smooth.
+			The <a href="../fallback/">fallback explainer</a> takes these three steps apart, one control volume at a time.</p>
+
+		<section class="widget" aria-label="Advection with and without limiting">
+			<h3>Advection, with and without limiting</h3>
+			<p class="hint">Dashed: exact solution. Green: the polynomial inside each element. Red: control volumes that fell back to second order in the last step.</p>
+			<canvas id="adv-canvas" class="pan-y"></canvas>
+			<div class="controls">
+				<button type="button" id="adv-play" class="primary">Play</button>
+				<button type="button" id="adv-reset">Reset</button>
+				<label>order <input type="range" id="adv-order" min="1" max="8" step="1" value="4" /> <output id="adv-order-out">4</output></label>
+				<label>elements <input type="range" id="adv-n" min="0" max="4" step="1" value="2" /> <output id="adv-n-out">16</output></label>
+				<label>profile <select id="adv-profile"><option value="mixed">Gaussian + square</option><option value="square">Square</option><option value="sine">Sine</option></select></label>
+				<label><input type="checkbox" id="adv-limit" /> a posteriori limiting</label>
+				<label>speed <input type="range" id="adv-speed" min="-2" max="2" step="1" value="0" /> <output id="adv-speed-out">1×</output></label>
+			</div>
+			<div class="readout">
+				<span>degrees of freedom <b id="adv-dof">64</b></span>
+				<span>periods <b id="adv-t">0.00</b></span>
+				<span>L1 error <b id="adv-err">0</b></span>
+				<span>cells at second order <b id="adv-flag">–</b></span>
+			</div>
+		</section>
+
+		<h3>Things to try</h3>
+		<ul>
+			<li><strong>The overshoot.</strong> Press Play with limiting off. The Gaussian is carried almost exactly, and the square
+				wave grows ripples at both edges that persist.</li>
+			<li><strong>The repair.</strong> Switch limiting on. The ripples disappear. The red marks show which control volumes were
+				recomputed: the ones next to the jumps and no others. Add elements and their number stays about the same while
+				the total grows. The Gaussian keeps its height because its peak is recognised as a smooth extremum.</li>
+			<li><strong>Same cost, different order.</strong> Choose the sine profile. Order 2 with 32 elements and order 8 with
+				8 elements both use 64 degrees of freedom. After one period their errors differ by four orders of magnitude.</li>
+			<li><strong>Order 1.</strong> At order 1 the scheme is the first-order upwind method. Everything is smeared, and
+				nothing ever overshoots.</li>
+		</ul>
+
+		<p class="note">The demo solves linear advection with a third-order strong-stability-preserving Runge–Kutta integrator and
+			applies the check at every stage. The detection (a relaxed discrete maximum principle with smooth-extremum detection)
+			and the fallback (MUSCL with a minmod slope on the control volumes) follow the reference implementation. The production
+			codes add a blending of the two fluxes around flagged cells and positivity checks on density and pressure.</p>
+
+		<h2>From this page to the papers</h2>
+		<p>The same construction carries over to systems of equations and to two and three dimensions, where the control volumes
+			become a tensor product of the one-dimensional ones.</p>
+		<ul>
+			<li><strong>Paper I</strong> applies it to the Euler equations in one and two dimensions, with shocks, contact
+				discontinuities and instabilities.
+				<a href="https://arxiv.org/abs/2209.06597">Velasco-Romero, Han Veiga &amp; Teyssier (2023)</a></li>
+			<li><strong>Paper II</strong> takes it to low Mach numbers, where most shock-capturing schemes dissipate the flow they
+				are meant to follow, with a low-Mach Riemann solver and a well-balanced formulation for stratified atmospheres.
+				<a href="https://arxiv.org/abs/2405.11063">Velasco-Romero &amp; Teyssier (2025)</a></li>
+			<li><strong>Paper III</strong> adds viscosity and diffusion at arbitrary order.
+				<a href="https://arxiv.org/abs/2604.07339">Velasco-Romero &amp; Teyssier (2026)</a></li>
+		</ul>
+
+		<figure class="movie movie-square">
+			<video muted loop playsinline preload="metadata" width="1080" height="1080" poster="../images/posters/kh_sd.jpg" src="../videos/kh_sd.mp4"></video>
+			<figcaption>Kelvin–Helmholtz instability with the fourth-order scheme and a posteriori limiting, 800×800 elements.</figcaption>
+		</figure>
+		<p>Where the limiter acts in this run, and in a strong-shock problem, is shown in the
+			<a href="../fallback/#real">fallback explainer</a>: it never touches more than 0.5% of the cells.</p>
+
+		<p>The codes are public: <a href="https://github.com/davidvelasco07/spd">spd</a> in Python, which runs on CPUs and GPUs,
+			and <a href="https://github.com/davidvelasco07/spd_K">spd_K</a> in C++ with Kokkos. There is also a set of
+			<a href="https://github.com/davidvelasco07/flatiron2023">notebooks</a> that build the method from scratch.</p>
+
+		<footer class="end">
+			<p><strong>Further reading</strong></p>
+			<ul>
+				<li>Kopriva &amp; Kolias (1996), <em>A conservative staggered-grid Chebyshev multidomain method for compressible flows</em>, J. Comput. Phys.</li>
+				<li>Liu, Vinokur &amp; Wang (2006), <em>Spectral difference method for unstructured grids I: basic formulation</em>, J. Comput. Phys.</li>
+				<li>Jameson (2010), <em>A proof of the stability of the spectral difference method for all orders of accuracy</em>, J. Sci. Comput.</li>
+				<li>Clain, Diot &amp; Loubère (2011), <em>A high-order finite volume method for systems of conservation laws: Multi-dimensional Optimal Order Detection (MOOD)</em>, J. Comput. Phys.</li>
+				<li>Vilar (2019), <em>A posteriori correction of high-order discontinuous Galerkin scheme through subcell finite volume formulation and flux reconstruction</em>, J. Comput. Phys.</li>
+			</ul>
+			<p><a href="../">← Back to the main page</a> · <a href="../fallback/">The fallback scheme explainer →</a> · <a href="../multigrid/">Geometric multigrid explainer</a></p>
+		</footer>
+	</main>
+
+	<script>
+		document.addEventListener('DOMContentLoaded', function () {
+			if (window.renderMathInElement) renderMathInElement(document.body, { delimiters: [{ left: '\\[', right: '\\]', display: true }, { left: '\\(', right: '\\)', display: false }] });
+		});
+	</script>
+</body>
+</html>
