@@ -431,13 +431,22 @@
 								the masses stay on the analytic orbit (dashed). Right: plain interpolation; the orbit drifts.
 								<a href="multigrid/">How the solver works →</a></figcaption>
 						</figure>
-						<figure class="movie movie-side">
-							<video width="1080" height="1080" muted loop playsinline preload="metadata" poster="images/posters/athenak/bb_collapse.jpg" src="videos/athenak/bb_collapse.mp4"></video>
-							<figcaption><strong>Collapse and fragmentation of a rotating cloud.</strong> The Boss–Bodenheimer test: a rotating
-								isothermal cloud with a small two-armed perturbation collapses into a bar, and the bar fragments. Face-on column
-								density over 2.5 free-fall times; the white dots are sink particles, which form in the densest gas, accrete
-								and merge. AthenaK with multigrid self-gravity and adaptive mesh refinement.</figcaption>
-						</figure>
+						<div class="movie-grid">
+							<figure class="movie movie-square">
+								<video width="1080" height="1080" muted loop playsinline preload="metadata" poster="images/posters/athenak/bb_collapse.jpg" src="videos/athenak/bb_collapse.mp4"></video>
+								<figcaption><strong>Collapse and fragmentation of a rotating cloud.</strong> The Boss–Bodenheimer test: a rotating
+									isothermal cloud with a small two-armed perturbation collapses into a bar, and the bar fragments. Face-on
+									column density over 2.4 free-fall times; the white dots are sink particles, which form in the densest
+									gas, accrete and merge. AthenaK with multigrid self-gravity.</figcaption>
+							</figure>
+							<figure class="movie movie-square">
+								<video width="1080" height="1080" muted loop playsinline preload="metadata" poster="images/posters/athenak/bb_collapse_mesh.jpg" src="videos/athenak/bb_collapse_mesh.mp4"></video>
+								<figcaption><strong>Adaptive refinement in action.</strong> The same run with its mesh drawn. Every square is a block
+									of 16³ cells; a block splits in two along each direction wherever the gas would otherwise not resolve
+									its Jeans length, down to five levels. The fine blocks follow the bar, then each fragment along its
+									orbit, and merge back into coarse ones behind them.</figcaption>
+							</figure>
+						</div>
 						<figure class="movie movie-wide">
 							<video width="1920" height="958" muted loop playsinline preload="metadata" poster="images/posters/mg/turbulent_fragmentation.jpg" src="videos/mg/turbulent_fragmentation.mp4"></video>
 							<figcaption><strong>Turbulent fragmentation under self-gravity.</strong> Column density of a turbulent,
