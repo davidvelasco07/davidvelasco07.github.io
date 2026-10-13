@@ -93,6 +93,7 @@
 	figure.movie-wide video { aspect-ratio: 2 / 1; }
 	figure.movie-square video { aspect-ratio: 1 / 1; }
 	figure.movie-landscape video { aspect-ratio: 3 / 2; }
+	figure.movie-hd video { aspect-ratio: 16 / 9; background: #04040a; }
 	/* a square clip beside its caption */
 	figure.movie-side { display: grid; grid-template-columns: minmax(0, 26em) minmax(0, 1fr); gap: 0 1.8em; align-items: center; }
 	figure.movie-side video { aspect-ratio: 1 / 1; }
