@@ -341,8 +341,8 @@
 								<figcaption><strong>Viscous Kelvin–Helmholtz instability.</strong> The dye in the test of Lecoanet et al. (2016)
 									at Reynolds number 10⁵, with both streams at the same density: explicit viscosity and diffusion give
 									the problem a well-defined solution to converge to. Fourth-order Spectral Difference with the
-									Navier–Stokes terms of <a href="https://arxiv.org/abs/2604.07339">Paper III</a>, 512×1024 degrees of
-									freedom; one of the two shear layers is shown.</figcaption>
+									Navier–Stokes terms of <a href="https://arxiv.org/abs/2604.07339">Paper III</a>, run with spd_K at 2048×4096
+									degrees of freedom; one of the two shear layers is shown.</figcaption>
 							</figure>
 							<figure class="movie movie-square">
 								<video width="1080" height="1080" muted loop playsinline preload="metadata" poster="images/posters/kh_viscous_strat.jpg" src="videos/kh_viscous_strat.mp4"></video>
@@ -436,7 +436,7 @@
 								<video width="1080" height="1080" muted loop playsinline preload="metadata" poster="images/posters/athenak/bb_collapse.jpg" src="videos/athenak/bb_collapse.mp4"></video>
 								<figcaption><strong>Collapse and fragmentation of a rotating cloud.</strong> The Boss–Bodenheimer test: a rotating
 									isothermal cloud with a small two-armed perturbation collapses into a bar, and the bar fragments. Face-on
-									column density over 2.4 free-fall times; the white dots are sink particles, which form in the densest
+									column density over 2.5 free-fall times; the white dots are sink particles, which form in the densest
 									gas, accrete and merge. AthenaK with multigrid self-gravity.</figcaption>
 							</figure>
 							<figure class="movie movie-square">
@@ -497,6 +497,10 @@
 							<article class="col-6 col-12-xsmall work-item">
 								<a href="images/fulls/01.jpg" class="image fit thumb"><img loading="lazy" src="images/thumbs/01.jpg" alt="Zoom into a Kelvin–Helmholtz billow down to the sub-element control volumes" /></a>
 								<h3>Zooming into a billow, down to the control volumes inside each element</h3>
+							</article>
+							<article class="col-6 col-12-xsmall work-item">
+								<a href="images/fulls/kh_viscous_strat.jpg" class="image fit thumb"><img loading="lazy" src="images/thumbs/kh_viscous_strat.jpg" alt="Dye concentration in a viscous Kelvin–Helmholtz billow with a density jump, after it has broken up" /></a>
+								<h3>Viscous Kelvin–Helmholtz instability with a density jump, Re = 10<sup>5</sup>: Spectral Difference, 4th order, 2048×4096 degrees of freedom, with spd_K</h3>
 							</article>
 							<article class="col-6 col-12-xsmall work-item">
 								<a href="images/fulls/dmr.jpg" class="image fit thumb"><img loading="lazy" src="images/thumbs/dmr.jpg" alt="Double Mach reflection: the Mach stem and the wall jet" /></a>
